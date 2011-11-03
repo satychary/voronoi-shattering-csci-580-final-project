@@ -1,0 +1,32 @@
+﻿Build started 2011/11/1 5:10:31.
+     1>Project "C:\Users\ChaoZ\Desktop\VoronoiTmp\VoronoiTmp\VoronoiTmp\VoronoiTmp.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Users\ChaoZ\Desktop\VoronoiTmp\VoronoiTmp\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\VoronoiTmp.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Program Files\Autodesk\Maya2011\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D NT_PLUGIN /D _WINDLL /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\Src\polyModifierCmd.cpp ..\Src\polyModifierFty.cpp ..\Src\polyModifierNode.cpp ..\Src\splitUVCmd.cpp ..\Src\splitUVFty.cpp ..\Src\splitUVFtyAction.cpp ..\Src\splitUVMain.cpp ..\Src\splitUVNode.cpp
+         splitUVNode.cpp
+         splitUVMain.cpp
+         splitUVFtyAction.cpp
+         splitUVFty.cpp
+         splitUVCmd.cpp
+         polyModifierNode.cpp
+         polyModifierFty.cpp
+         polyModifierCmd.cpp
+         Generating Code...
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\ChaoZ\Desktop\VoronoiTmp\VoronoiTmp\Debug\VoronoiTmp.mll" /NOLOGO /LIBPATH:"C:\Program Files\Autodesk\Maya2011\lib" OpenMayaAnim.lib Foundation.lib OpenMaya.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\VoronoiTmp.mll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\ChaoZ\Desktop\VoronoiTmp\VoronoiTmp\Debug\VoronoiTmp.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\ChaoZ\Desktop\VoronoiTmp\VoronoiTmp\Debug\VoronoiTmp.lib" /MACHINE:X86 /DLL Debug\polyModifierCmd.obj
+         Debug\polyModifierFty.obj
+         Debug\polyModifierNode.obj
+         Debug\splitUVCmd.obj
+         Debug\splitUVFty.obj
+         Debug\splitUVFtyAction.obj
+         Debug\splitUVMain.obj
+         Debug\splitUVNode.obj
+     1>Foundation.lib(FOUNDATION.dll) : fatal error LNK1112: module machine type 'x64' conflicts with target machine type 'X86'
+     1>Done Building Project "C:\Users\ChaoZ\Desktop\VoronoiTmp\VoronoiTmp\VoronoiTmp\VoronoiTmp.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:15.35
