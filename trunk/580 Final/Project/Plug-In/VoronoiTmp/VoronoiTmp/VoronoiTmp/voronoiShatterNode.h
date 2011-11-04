@@ -16,11 +16,11 @@
 //
 #include <maya/MTypeId.h>
 
-class voronoiShatterNode : public polyModifierNode
+class VoronoiShatterNode : public polyModifierNode
 {
 public:
-	         voronoiShatterNode(void);
-	virtual ~voronoiShatterNode(void);
+	         VoronoiShatterNode(void);
+	virtual ~VoronoiShatterNode(void);
 	
 	virtual MStatus		compute( const MPlug& plug, MDataBlock& data );
 
@@ -35,7 +35,7 @@ public:
 	//
 	static	MTypeId		id;
 
-	voronoiShatterFty	voronoiShatterFactory;
+	VoronoiShatterFty	voronoiShatterFactory;
 };
 
 #endif

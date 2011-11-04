@@ -34,16 +34,16 @@
 
 // Unique Node TypeId
 //
-MTypeId     voronoiShatterNode::id( 0x34580 );
+MTypeId     VoronoiShatterNode::id( 0x34580 );
 
 //  Description:
 //		voronoiShatterNode constructor
-voronoiShatterNode::voronoiShatterNode(void){
+VoronoiShatterNode::VoronoiShatterNode(void){
 }
 
 //	Description:
 //		voronoiShatterNode destructor
-voronoiShatterNode::~voronoiShatterNode(void){
+VoronoiShatterNode::~VoronoiShatterNode(void){
 }
 
 //	Description:
@@ -53,7 +53,7 @@ voronoiShatterNode::~voronoiShatterNode(void){
 //		plug - the plug to compute
 //		data - object that provides access to the attributes for this node
 //
-MStatus voronoiShatterNode::compute( const MPlug& plug, MDataBlock& data ){
+MStatus VoronoiShatterNode::compute( const MPlug& plug, MDataBlock& data ){
 	MStatus status = MS::kSuccess;
  
 	MDataHandle stateData = data.outputValue( state, &status );
@@ -127,9 +127,9 @@ MStatus voronoiShatterNode::compute( const MPlug& plug, MDataBlock& data ){
 //
 //	Return Value:
 //		a new object of this type
-void* voronoiShatterNode::creator(){
+void* VoronoiShatterNode::creator(){
 
-	return new voronoiShatterNode();
+	return new VoronoiShatterNode();
 
 }
 
@@ -143,7 +143,7 @@ void* voronoiShatterNode::creator(){
 //		MS::kSuccess
 //		MS::kFailure
 //
-MStatus voronoiShatterNode::initialize(){
+MStatus VoronoiShatterNode::initialize(){
 	MStatus				status;
 
 	MFnTypedAttribute attrFn;

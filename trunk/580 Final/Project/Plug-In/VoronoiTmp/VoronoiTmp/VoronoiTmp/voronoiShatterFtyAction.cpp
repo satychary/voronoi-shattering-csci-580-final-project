@@ -22,7 +22,7 @@
 
 //	Description:
 //		Performs the actual voronoiShatter operation on the given object
-MStatus voronoiShatterFty::doIt(){
+MStatus VoronoiShatterFty::doIt(){
 	MStatus status = MS::kSuccess;
 
 	MFnMesh meshFn( fMesh );

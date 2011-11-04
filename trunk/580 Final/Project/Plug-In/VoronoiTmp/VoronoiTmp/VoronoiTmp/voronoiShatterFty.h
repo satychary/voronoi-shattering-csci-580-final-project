@@ -15,11 +15,11 @@
 //
 #include <maya/MObject.h>
 
-class voronoiShatterFty : public polyModifierFty
+class VoronoiShatterFty : public polyModifierFty
 {
 public:
-				voronoiShatterFty();
-	virtual		~voronoiShatterFty();
+				VoronoiShatterFty();
+	virtual		~VoronoiShatterFty();
 
 	void		 setMesh( MObject mesh );
 	static int	 getMeshCount();
