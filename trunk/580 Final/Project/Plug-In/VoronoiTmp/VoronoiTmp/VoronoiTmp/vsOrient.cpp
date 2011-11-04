@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::orient(){
+void VoronoiShatter::orient(){
 	return;
 }

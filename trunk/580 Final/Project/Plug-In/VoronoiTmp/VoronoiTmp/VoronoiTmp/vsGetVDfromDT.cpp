@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::getVDFormDT(){
+void VoronoiShatter::getVDFormDT(){
 	return;
 }
