@@ -1,11 +1,11 @@
 #include "voronoiShatter.h"
 
 
-voronoiShatter::voronoiShatter(void)
+VoronoiShatter::VoronoiShatter(void)
 {
 }
 
 
-voronoiShatter::~voronoiShatter(void)
+VoronoiShatter::~VoronoiShatter(void)
 {
 }

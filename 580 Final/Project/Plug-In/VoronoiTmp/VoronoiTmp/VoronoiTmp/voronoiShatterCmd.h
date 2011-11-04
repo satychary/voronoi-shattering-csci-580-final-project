@@ -19,11 +19,11 @@
 // Forward Class Declarations
 //
 class MArgList;
-class voronoiShatterCmd : public polyModifierCmd
+class VoronoiShatterCmd : public polyModifierCmd
 {
 public:
-	voronoiShatterCmd(void);
-	~voronoiShatterCmd(void);
+	VoronoiShatterCmd(void);
+	~VoronoiShatterCmd(void);
 	static		void* creator();
 
 	bool		isUndoable() const;
@@ -44,7 +44,7 @@ private:
 	// Private Data //
 
 	// voronoiShatter Factory
-	voronoiShatterFty			voronoiShatterFactory;
+	VoronoiShatterFty			voronoiShatterFactory;
 };
 
 #endif

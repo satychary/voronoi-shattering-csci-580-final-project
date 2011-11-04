@@ -8,28 +8,29 @@
 #define _voronoiShatter
 
 #include "maya/MPoint.h"
+struct Tetrahedron;
 
-struct vertex{
+struct Vertex{
 	MPoint point;
-	tetrahedron incidentTetra; // optional
+    Tetrahedron *incidentTetra; // optional
 };
 
-struct tetrahedron{
-	vertex *v1;                // vertex
-	vertex *v2;
-	vertex *v3;
-	vertex *v4;
-	tetrahedron *neighbour1;   // neighbour
-	tetrahedron *neighbour2;
-	tetrahedron *neighbour3;
-	tetrahedron *neighbour4;
+struct Tetrahedron{
+	Vertex *v1;                // vertex
+	Vertex *v2;
+	Vertex *v3;
+	Vertex *v4;
+	Tetrahedron *neighbour1;   // neighbour
+	Tetrahedron *neighbour2;
+	Tetrahedron *neighbour3;
+	Tetrahedron *neighbour4;
 };
 
-class voronoiShatter
+class VoronoiShatter
 {
 public:
-	voronoiShatter(void);
-	~voronoiShatter(void);
+	VoronoiShatter(void);
+	~VoronoiShatter(void);
 
 	//  Public Method
 	//

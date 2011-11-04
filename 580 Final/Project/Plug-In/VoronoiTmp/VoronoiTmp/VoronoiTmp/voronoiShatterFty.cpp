@@ -8,27 +8,27 @@
 
 #include "voronoiShatterFty.h"
 
-int voronoiShatterFty::meshCount = 0;
+int VoronoiShatterFty::meshCount = 0;
 
 //  Description:
 //		voronoiShatter constructor
-voronoiShatterFty::voronoiShatterFty(void){
+VoronoiShatterFty::VoronoiShatterFty(void){
 }
 
 //	Description:
 //		voronoiShatter destructor
-voronoiShatterFty::~voronoiShatterFty(void){
+VoronoiShatterFty::~VoronoiShatterFty(void){
 }
 
 // Description:
 //		voronoiShatter setMesh
-void voronoiShatterFty::setMesh(MObject mesh){
+void VoronoiShatterFty::setMesh(MObject mesh){
 	
 	fMesh = mesh;
 }
 
 // Description:
 //		get static variable meshCount
-int voronoiShatterFty::getMeshCount(){
+int VoronoiShatterFty::getMeshCount(){
 	return meshCount;
 }

@@ -39,12 +39,12 @@
 
 //	Description:
 //		voronoiShatterCmd constructor
-voronoiShatterCmd::voronoiShatterCmd(void){
+VoronoiShatterCmd::VoronoiShatterCmd(void){
 }
 
 //	Description:
 //		voronoiShatterCmd descructor
-voronoiShatterCmd::~voronoiShatterCmd(void){
+VoronoiShatterCmd::~VoronoiShatterCmd(void){
 }
 
 //	Description:
@@ -53,8 +53,8 @@ voronoiShatterCmd::~voronoiShatterCmd(void){
 //
 //	Return Value:
 //		a new object of this type
-void* voronoiShatterCmd::creator(){
-	return new voronoiShatterCmd();
+void* VoronoiShatterCmd::creator(){
+	return new VoronoiShatterCmd();
 }
 
 //	Description:
@@ -63,7 +63,7 @@ void* voronoiShatterCmd::creator(){
 //
 //	Return Value:
 //		true if this command is undoable.
-bool voronoiShatterCmd::isUndoable() const{
+bool VoronoiShatterCmd::isUndoable() const{
 	return true;
 }
 
@@ -78,7 +78,7 @@ bool voronoiShatterCmd::isUndoable() const{
 //		MS::kFailure - command failed (returning this value will cause the 
 //                     MEL script that is being run to terminate unless the
 //                     error is caught using a "catch" statement.
-MStatus voronoiShatterCmd::doIt( const MArgList& )
+MStatus VoronoiShatterCmd::doIt( const MArgList& )
 {
 	MGlobal::displayInfo( "Hello Voronoi!\n" ); 
 	return MS::kSuccess; 
@@ -129,7 +129,7 @@ MStatus voronoiShatterCmd::doIt( const MArgList& )
 //		MS::kSuccess - command succeeded
 //		MS::kFailure - redoIt failed.  this is a serious problem that will
 //                     likely cause the undo queue to be purged
-MStatus voronoiShatterCmd::redoIt(){
+MStatus VoronoiShatterCmd::redoIt(){
 	MStatus status;
 
 	// Process the polyModifierCmd
@@ -159,7 +159,7 @@ MStatus voronoiShatterCmd::redoIt(){
 //		MS::kSuccess - command succeeded
 //		MS::kFailure - redoIt failed.  this is a serious problem that will
 //                     likely cause the undo queue to be purged
-MStatus voronoiShatterCmd::undoIt(){
+MStatus VoronoiShatterCmd::undoIt(){
 	MStatus status;
 
 	status = undoModifyPoly();
@@ -184,7 +184,7 @@ MStatus voronoiShatterCmd::undoIt(){
 //	Return Value:
 //		MS::kSuccess - initialize succeeded
 //		MS::kFailure - initialize failed
-MStatus voronoiShatterCmd::initModifierNode( MObject modifierNode ){
+MStatus VoronoiShatterCmd::initModifierNode( MObject modifierNode ){
 	MStatus status;
 
 	status = MS::kSuccess;
@@ -199,7 +199,7 @@ MStatus voronoiShatterCmd::initModifierNode( MObject modifierNode ){
 //	Return Value:
 //		MS::kSuccess - initialize succeeded
 //		MS::kFailure - initialize failed
-MStatus voronoiShatterCmd::directModifier( MObject mesh ){
+MStatus VoronoiShatterCmd::directModifier( MObject mesh ){
 	MStatus status;
 
 	voronoiShatterFactory.setMesh( mesh );
