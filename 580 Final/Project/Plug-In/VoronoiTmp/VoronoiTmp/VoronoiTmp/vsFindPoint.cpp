@@ -11,7 +11,7 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::findPoint(){
+void VoronoiShatter::findPoint(){
 
 	return;
 }

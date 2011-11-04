@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::initializeBigTetra(){
+void VoronoiShatter::initializeBigTetra(){
 	return;
 }

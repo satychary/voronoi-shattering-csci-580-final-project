@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::perform(){
+void VoronoiShatter::perform(){
 	return;
 }

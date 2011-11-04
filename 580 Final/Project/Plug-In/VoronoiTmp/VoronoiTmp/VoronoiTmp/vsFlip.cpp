@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::flip(){
+void VoronoiShatter::flip(){
 	return;
 }

@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::inSphere(){
+void VoronoiShatter::inSphere(){
 	return;
 }

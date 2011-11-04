@@ -11,6 +11,6 @@
 //	Arguments:
 //
 //	Return Value;
-void voronoiShatter::insertOnePoint(){
+void VoronoiShatter::insertOnePoint(){
 	return;
 }
