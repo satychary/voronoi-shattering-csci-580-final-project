@@ -38,8 +38,8 @@ public:
 	//		Change the return value and the arguments as u need!
 	void initializeBigTetra(); // CZ
 
-	void orient();             // R
-	void inSphere();
+	double orient(Vertex *v1, Vertex *v2, Vertex *v3, MPoint p);             // R
+	double inSphere(Vertex *v1, Vertex *v2, Vertex *v3, Vertex *v4, MPoint p);
 
 	void findPoint();          // N, using WALK algorithm
 
