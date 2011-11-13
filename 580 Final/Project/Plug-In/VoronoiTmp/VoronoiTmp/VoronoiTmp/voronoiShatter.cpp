@@ -65,6 +65,24 @@ void VoronoiShatter::deleteTetra(int key)
 }
 
 //	Description:
+//		update tetra in our pool
+//	Arguments:
+//		tetra -- tetra to be updated
+//	Return Value;
+//		true  -- if success
+//      false -- if tetra not found
+bool VoronoiShatter::updateTetra(Tetrahedron &tetra)
+{
+	TetraMapItr newTetra = tetraPool.find(tetra.key);
+	if(newTetra != tetraPool.end()){
+		newTetra->second = tetra;
+		return true;
+	}
+	else
+		return false;
+}
+
+//	Description:
 //		get the first tetra form our pool
 //	Arguments:
 //		tetra -- referenced, retruned as the first tetra

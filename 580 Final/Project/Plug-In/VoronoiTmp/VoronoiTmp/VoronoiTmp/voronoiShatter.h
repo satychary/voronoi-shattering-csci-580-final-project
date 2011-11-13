@@ -73,6 +73,7 @@ private:
 														   return false if:
 														   there is already a tetra with same key */
 	void deleteTetra(int key);							// delete tetra from our pool by key
+	bool updateTetra(Tetrahedron &tetra);                
 	bool firstTetra(Tetrahedron &tetra);				/* get the first tetrahedron into tetra from our pool
 														   return false if: our pool is empty*/
 
