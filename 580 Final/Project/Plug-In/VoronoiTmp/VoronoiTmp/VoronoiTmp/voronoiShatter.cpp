@@ -40,7 +40,9 @@ bool VoronoiShatter::getTetra(int key, Tetrahedron &tetra)
 //               and our pool remain unchanged
 bool VoronoiShatter::addTetra(Tetrahedron tetra)
 {
-	TetraMapItem newItem(currentKey++, tetra);
+	tetra.key = currentKey;
+	TetraMapItem newItem(currentKey, tetra);
+	currentKey++;
 	return tetraPool.insert(newItem).second;
 }
 
