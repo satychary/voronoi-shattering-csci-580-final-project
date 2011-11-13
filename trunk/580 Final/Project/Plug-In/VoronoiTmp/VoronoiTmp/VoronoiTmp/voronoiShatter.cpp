@@ -38,9 +38,16 @@ bool VoronoiShatter::getTetra(int key, Tetrahedron &tetra)
 //		true  -- if success
 //		false -- if there is already a tetra with same key, 
 //               and our pool remain unchanged
-bool VoronoiShatter::addTetra(Tetrahedron tetra)
+bool VoronoiShatter::addTetra(Tetrahedron &tetra)
 {
+	// set currentKey
 	tetra.key = currentKey;
+	// set incident for vertices
+	tetra.v1.incidentTetra = currentKey;
+	tetra.v2.incidentTetra = currentKey;
+	tetra.v3.incidentTetra = currentKey;
+	tetra.v4.incidentTetra = currentKey;
+
 	TetraMapItem newItem(currentKey, tetra);
 	currentKey++;
 	return tetraPool.insert(newItem).second;
