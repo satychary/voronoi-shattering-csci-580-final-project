@@ -69,7 +69,7 @@ private:
 														   return false if:
 														   key not exist
 														   */			
-	bool addTetra(Tetrahedron tetra);					/* add tetra to our pool,
+	bool addTetra(Tetrahedron &tetra);					/* add tetra to our pool,
 														   return false if:
 														   there is already a tetra with same key */
 	void deleteTetra(int key);							// delete tetra from our pool by key
