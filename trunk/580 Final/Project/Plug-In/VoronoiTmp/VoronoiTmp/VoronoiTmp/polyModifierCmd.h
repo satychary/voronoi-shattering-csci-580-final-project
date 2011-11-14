@@ -404,7 +404,7 @@ protected:
 	MStatus							redoModifyPoly();
 	MStatus							undoModifyPoly();
 
-private:
+protected:
 
 	//////////////////////////////////////////////
 	// polyModifierCmd Internal Processing Data //
