@@ -14,9 +14,9 @@
 void VoronoiShatter::insertOnePoint(MPoint p){
 
 	//get a tetrahedron t
-	Tetrahedron t, ta; 
+	Tetrahedron t; 
 
-	//t = findPoint(p);
+	findPoint(p, t);
 
 	//t -> do flip14
 	//flip14 only happens here
