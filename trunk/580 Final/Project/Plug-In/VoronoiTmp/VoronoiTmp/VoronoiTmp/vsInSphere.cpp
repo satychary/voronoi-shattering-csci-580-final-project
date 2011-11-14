@@ -28,7 +28,7 @@ double FFDet( double Ax, double Ay, double Az, double Bx, double By, double Bz, 
 }
 
 
-double VoronoiShatter::inSphere(Vertex *v1, Vertex *v2, Vertex *v3, Vertex *v4, MPoint p){
+double VoronoiShatter::inSphere(Vertex v1, Vertex v2, Vertex v3, Vertex v4, MPoint p){
 
 	/*
 	/	5x5 determinant
@@ -62,10 +62,10 @@ double VoronoiShatter::inSphere(Vertex *v1, Vertex *v2, Vertex *v3, Vertex *v4, 
 
 
 
-	double Ax = v1->point.x, Ay = v1->point.y, Az = v1->point.z;
-	double Bx = v2->point.x, By = v2->point.y, Bz = v2->point.z;
-	double Cx = v3->point.x, Cy = v3->point.y, Cz = v3->point.z;
-	double Dx = v4->point.x, Dy = v4->point.y, Dz = v4->point.z;
+	double Ax = v1.point.x, Ay = v1.point.y, Az = v1.point.z;
+	double Bx = v2.point.x, By = v2.point.y, Bz = v2.point.z;
+	double Cx = v3.point.x, Cy = v3.point.y, Cz = v3.point.z;
+	double Dx = v4.point.x, Dy = v4.point.y, Dz = v4.point.z;
 	double Px = p.x, Py = p.y, Pz = p.z;
 
 	double sqA =Ax * Ax + Ay * Ay + Az * Az;
