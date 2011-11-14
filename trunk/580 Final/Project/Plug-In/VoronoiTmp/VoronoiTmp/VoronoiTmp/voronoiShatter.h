@@ -9,6 +9,7 @@
 
 #include "maya/MPoint.h"
 #include <map>
+#include <stack>
 
 //  struct 
 struct Tetrahedron;
@@ -52,8 +53,8 @@ public:
 
 	void findPoint();          // N, using WALK algorithm
 
-	void insertOnePoint();     // B
-	void flip();       
+	void insertOnePoint(MPoint p);     // B
+	void flip( int key, MPoint p );       
 
 	void getVDFormDT();        // CZ
 
@@ -82,9 +83,22 @@ private:
 															return flase if:
 											                key not exist */
 
+	//assistant functions in addPoint
+	int getNeighborByVertices( Tetrahedron &t, MPoint a, MPoint b, MPoint c );
+	bool isInTetrahedron( Tetrahedron &tetra, MPoint v );
+	int getd( Tetrahedron &t, MPoint a, MPoint b, MPoint c );
+
+	//assistant function in flip
+	void flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
+	void flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
+	void flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
+	void replaceNeighbour( Tetrahedron &n, int oldkey, int newkey );
+
 	// Private member variable
 	TetraMap tetraPool;         /* our pool where we put all tetrahedrons avaliable now, 
 	                               each associated with an unique interger key value */
+
+	std::stack<int> flipStack;
 
 	int currentKey;            // curent key value for new tehrahedron created
 };
