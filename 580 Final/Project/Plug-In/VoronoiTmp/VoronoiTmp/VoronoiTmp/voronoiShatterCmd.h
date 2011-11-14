@@ -11,6 +11,7 @@
 
 #include "polymodifiercmd.h"
 #include "voronoiShatterFty.h"
+#include "voronoiShatter.h"
 
 // Function Sets
 //
@@ -42,7 +43,7 @@ private:
 	// Private Methods //
 
 	// Private Data //
-
+	VoronoiShatter voronoiShatter;
 	// voronoiShatter Factory
 	VoronoiShatterFty			voronoiShatterFactory;
 };

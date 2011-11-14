@@ -13,6 +13,7 @@
 //
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnMesh.h>
+#include <maya/MFnTransform.h>
 #include <maya/MFnSingleIndexedComponent.h>
 
 // Iterators
@@ -25,6 +26,8 @@
 #include <maya/MGlobal.h>
 #include <maya/MSelectionList.h>
 #include <maya/MPlug.h>
+#include <maya/MBoundingBox.h>
+#include <maya/MMatrix.h>
 
 #include <maya/MIOStream.h>
 #include <sstream>
@@ -82,7 +85,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 {
 	MGlobal::displayInfo( "Hello Voronoi!\n" ); 
 	return MS::kSuccess; 
-	/****************************************************************************************************************
+	//****************************************************************************************************************
 	MStatus status;
 
 	// Parse the selection list for objects with selected UV components.
@@ -97,24 +100,72 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 	MItSelectionList selListIter( selList );
 	selListIter.setFilter( MFn::kMesh );
 
-	// Initialize the voronoiShatterCmd node type - mesh node already set
-	//******************
-	setModifierNodeType( voronoiShatterNode::id );
+	MFnDagNode nodeFn;
+	MFnMesh meshFn;
 
-	status = doModifyPoly();
-			
-	if( status == MS::kSuccess ){
-		std::stringstream out;
-		out<< "Succeeded! Result:";
-		out<< voronoiShatterFactory.getMeshCount();
-		setResult( out.str().c_str() );
-	}
-	else{
-		
-		displayError( "voronoiShatter command failed!" );
+	MDagPath dagPath;
+	MBoundingBox bbx;
+	MObject transformMx;
+	/*MObject component;
+	selListIter.getDagPath( dagPath, component );
+	
+	dagPath.extendToShape();
+	setMeshNode( dagPath );*/
+
+	for( ; !selListIter.isDone(); selListIter.next() ){
+		selListIter.getDagPath(dagPath);
+		nodeFn.setObject(dagPath);
+		bbx = nodeFn.boundingBox();
+
+		transformMx = nodeFn.parent(0);
+		nodeFn.setObject(transformMx);
+		MMatrix mx = nodeFn.transformationMatrix();
+
+		MPoint max,min;
+		max = bbx.max();
+		min = bbx.min();
+
+		max *= mx;
+		min *= mx;
+
+		Tetrahedron tetra = voronoiShatter.initializeBigTetra(min,max);
+
+		MString output;
+		output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
+		output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
+		// create bounding box
+		/*MString v[8];
+		v[0]= MString("spaceLocator -a -p ") + max.x + " " + max.y + " " + max.z + ";";
+		v[1]= MString("spaceLocator -a -p ") + min.x + " " + max.y + " " + max.z + ";";
+		v[2]= MString("spaceLocator -a -p ") + min.x + " " + max.y + " " + min.z + ";";
+		v[3]= MString("spaceLocator -a -p ") + max.x + " " + max.y + " " + min.z + ";";
+		v[4]= MString("spaceLocator -a -p ") + max.x + " " + min.y + " " + max.z + ";";
+		v[5]= MString("spaceLocator -a -p ") + min.x + " " + min.y + " " + max.z + ";";
+		v[6]= MString("spaceLocator -a -p ") + min.x + " " + min.y + " " + min.z + ";";
+		v[7]= MString("spaceLocator -a -p ") + max.x + " " + min.y + " " + min.z + ";";
+
+
+		for(int i=0;i<8;i++){
+			status = fDGModifier.commandToExecute(v[i]);
+		}*/
+
+		MString v[4];
+		v[0]= MString("spaceLocator -a -p ") + tetra.v1.point.x + " " + tetra.v1.point.y + " " + tetra.v1.point.z + ";";
+		v[1]= MString("spaceLocator -a -p ") + tetra.v2.point.x + " " + tetra.v2.point.y + " " + tetra.v2.point.z + ";";
+		v[2]= MString("spaceLocator -a -p ") + tetra.v3.point.x + " " + tetra.v3.point.y + " " + tetra.v3.point.z + ";";
+		v[3]= MString("spaceLocator -a -p ") + tetra.v4.point.x + " " + tetra.v4.point.y + " " + tetra.v4.point.z + ";";
+
+		for(int i=0;i<4;i++){
+			status = fDGModifier.commandToExecute(v[i]);
+		}
+
+		fDGModifier.doIt();
+
+		MGlobal::displayInfo(output);
+			//+", Vertex count:"+ meshFn.numVertices() );
 	}
 
-	return status;
+	return MS::kSuccess;
 	//************************************************************************************************************/
 }
 
