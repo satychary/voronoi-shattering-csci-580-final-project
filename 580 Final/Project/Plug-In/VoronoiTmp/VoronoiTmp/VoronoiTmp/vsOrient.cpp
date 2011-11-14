@@ -11,7 +11,7 @@
 //	Arguments:
 //
 //	Return Value;
-double VoronoiShatter::orient(Vertex *v1, Vertex *v2, Vertex *v3, MPoint p){
+double VoronoiShatter::orient(Vertex v1, Vertex v2, Vertex v3, MPoint p){
 
 	/*
 	/	4x4 determinant
@@ -26,9 +26,9 @@ double VoronoiShatter::orient(Vertex *v1, Vertex *v2, Vertex *v3, MPoint p){
 	/	+( AxByCz - AxCyBz - BxAyCz + BxCyAz + CxAyBz - CxByAz )
 	*/
 
-	double Ax = v1->point.x, Ay = v1->point.y, Az = v1->point.z;
-	double Bx = v2->point.x, By = v2->point.y, Bz = v2->point.z;
-	double Cx = v3->point.x, Cy = v3->point.y, Cz = v3->point.z;
+	double Ax = v1.point.x, Ay = v1.point.y, Az = v1.point.z;
+	double Bx = v2.point.x, By = v2.point.y, Bz = v2.point.z;
+	double Cx = v3.point.x, Cy = v3.point.y, Cz = v3.point.z;
 	double Px = p.x, Py = p.y, Pz = p.z;
 
 	double sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, result = 0;
