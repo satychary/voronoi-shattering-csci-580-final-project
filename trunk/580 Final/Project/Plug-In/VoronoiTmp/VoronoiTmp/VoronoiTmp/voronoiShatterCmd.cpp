@@ -122,6 +122,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 		selListIter.getDagPath(dagPath);
 		nodeFn.setObject(dagPath);
 		bbx = nodeFn.boundingBox();
+		voronoiShatter.setBoundingBox(bbx);
 
 		transformMx = nodeFn.parent(0);
 		nodeFn.setObject(transformMx);
@@ -134,7 +135,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 		max *= mx;
 		min *= mx;
 
-		Tetrahedron tetra = voronoiShatter.initializeBigTetra(min,max);
+		Tetrahedron tetra = voronoiShatter.initializeBigTetra();
 
 		MString output;
 		output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;

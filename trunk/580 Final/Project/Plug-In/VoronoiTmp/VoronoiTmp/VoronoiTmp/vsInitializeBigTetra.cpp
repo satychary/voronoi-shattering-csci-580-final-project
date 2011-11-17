@@ -12,7 +12,11 @@
 //		min -- left bottom back point of boundingbox
 //		max -- right top front point of boundingbox
 //	Return Value;
-Tetrahedron VoronoiShatter::initializeBigTetra(MPoint min, MPoint max){
+Tetrahedron VoronoiShatter::initializeBigTetra(){
+	MPoint min;
+	MPoint max;
+	min = boundingBox.min();
+	max = boundingBox.max();
 	
 	MPoint top, left, right, front;
 	Vertex topV, leftV, rightV, frontV;
