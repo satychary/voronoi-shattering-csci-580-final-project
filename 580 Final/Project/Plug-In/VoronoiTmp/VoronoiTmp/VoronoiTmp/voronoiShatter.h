@@ -7,7 +7,8 @@
 #ifndef _voronoiShatter
 #define _voronoiShatter
 
-#include "maya/MPoint.h"
+#include <maya/MPoint.h>
+#include <maya/MBoundingBox.h>
 #include <map>
 #include <stack>
 
@@ -46,7 +47,7 @@ public:
 	//
 	//  To team members: 
 	//		Change the return value and the arguments as u need!
-	Tetrahedron initializeBigTetra(MPoint min, MPoint max);
+	Tetrahedron initializeBigTetra();
 
 	double orient(Vertex v1, Vertex v2, Vertex v3, MPoint p);             // R
 	double inSphere(Vertex v1, Vertex v2, Vertex v3, Vertex v4, MPoint p);
@@ -60,6 +61,9 @@ public:
 
 	// Mian action
 	void perform();
+
+	// set bounding box
+	void setBoundingBox(MBoundingBox bbx);
 
 private:
 
@@ -101,6 +105,7 @@ private:
 	std::stack<int> flipStack;
 
 	int currentKey;            // curent key value for new tehrahedron created
+	MBoundingBox boundingBox;  // bounding box of the mesh 
 };
 
 #endif

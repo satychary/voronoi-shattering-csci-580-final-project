@@ -11,6 +11,8 @@ VoronoiShatter::~VoronoiShatter(void)
 {
 }
 
+
+
 //	Description: 
 //		get the tetrahedron form our pool by key
 //	Arguments:
@@ -114,4 +116,14 @@ bool VoronoiShatter::popTetra(int key, Tetrahedron &tetra)
 	}
 	else
 		return false;
+}
+
+//	Description:
+//		set bounding box
+//	Arguments:
+//		bbx -- bounding box to set
+//	Return Value;
+void VoronoiShatter::setBoundingBox(MBoundingBox bbx)
+{
+	boundingBox = bbx;
 }
