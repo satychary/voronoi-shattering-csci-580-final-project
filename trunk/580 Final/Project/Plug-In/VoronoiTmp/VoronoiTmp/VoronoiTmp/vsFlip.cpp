@@ -64,6 +64,7 @@ void VoronoiShatter::flip( int key, MPoint p ){
 		break;
 	default:
 		//assert
+		break;
 	}
 
 	// determine d
@@ -83,6 +84,7 @@ void VoronoiShatter::flip( int key, MPoint p ){
 		break;
 	default:
 		//assert
+		break;
 	}
 
 	// if d is outside the circumsphere, don't flip
