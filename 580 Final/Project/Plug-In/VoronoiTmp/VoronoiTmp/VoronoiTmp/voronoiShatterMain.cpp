@@ -21,7 +21,7 @@ MStatus initializePlugin( MObject obj ){
 	MFnPlugin plugin( obj, PLUGIN_COMPANY, "1.0", "Any");
 
 	// helloWorld test
-	status = plugin.registerCommand( "helloVoronoi", VoronoiShatterCmd::creator );
+	status = plugin.registerCommand( "voro", VoronoiShatterCmd::creator );
 	if ( !status )
 		status.perror( "registerCommand failed");
 
@@ -57,7 +57,7 @@ MStatus uninitializePlugin( MObject obj )
 	MStatus   status;
 	MFnPlugin plugin( obj );
 
-	status = plugin.deregisterCommand( "helloVoronoi" );
+	status = plugin.deregisterCommand( "voro" );
 	if ( !status )
 		status.perror( "deregisterCommand failed" );
 	/***************************************************************************************

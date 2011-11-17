@@ -15,6 +15,7 @@
 #include <maya/MFnMesh.h>
 #include <maya/MFnTransform.h>
 #include <maya/MFnSingleIndexedComponent.h>
+#include <maya/MFnSet.h>
 
 // Iterators
 //
@@ -28,6 +29,8 @@
 #include <maya/MPlug.h>
 #include <maya/MBoundingBox.h>
 #include <maya/MMatrix.h>
+#include <maya/MPointArray.h>
+#include <maya/MIntArray.h>
 
 #include <maya/MIOStream.h>
 #include <sstream>
@@ -83,8 +86,9 @@ bool VoronoiShatterCmd::isUndoable() const{
 //                     error is caught using a "catch" statement.
 MStatus VoronoiShatterCmd::doIt( const MArgList& )
 {
-	MGlobal::displayInfo( "Hello Voronoi!\n" ); 
-	return MS::kSuccess; 
+
+	//	MGlobal::displayInfo( "Hello Voronoi!\n" ); 
+    //	return MS::kSuccess; 
 	//****************************************************************************************************************
 	MStatus status;
 
@@ -106,6 +110,8 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 	MDagPath dagPath;
 	MBoundingBox bbx;
 	MObject transformMx;
+	MObject dependNode;
+	MObject newMesh;
 	/*MObject component;
 	selListIter.getDagPath( dagPath, component );
 	
@@ -133,33 +139,54 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 		MString output;
 		output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
 		output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
+		
 		// create bounding box
-		/*MString v[8];
-		v[0]= MString("spaceLocator -a -p ") + max.x + " " + max.y + " " + max.z + ";";
-		v[1]= MString("spaceLocator -a -p ") + min.x + " " + max.y + " " + max.z + ";";
-		v[2]= MString("spaceLocator -a -p ") + min.x + " " + max.y + " " + min.z + ";";
-		v[3]= MString("spaceLocator -a -p ") + max.x + " " + max.y + " " + min.z + ";";
-		v[4]= MString("spaceLocator -a -p ") + max.x + " " + min.y + " " + max.z + ";";
-		v[5]= MString("spaceLocator -a -p ") + min.x + " " + min.y + " " + max.z + ";";
-		v[6]= MString("spaceLocator -a -p ") + min.x + " " + min.y + " " + min.z + ";";
-		v[7]= MString("spaceLocator -a -p ") + max.x + " " + min.y + " " + min.z + ";";
-
-
-		for(int i=0;i<8;i++){
-			status = fDGModifier.commandToExecute(v[i]);
-		}*/
-
 		MString v[4];
 		v[0]= MString("spaceLocator -a -p ") + tetra.v1.point.x + " " + tetra.v1.point.y + " " + tetra.v1.point.z + ";";
 		v[1]= MString("spaceLocator -a -p ") + tetra.v2.point.x + " " + tetra.v2.point.y + " " + tetra.v2.point.z + ";";
 		v[2]= MString("spaceLocator -a -p ") + tetra.v3.point.x + " " + tetra.v3.point.y + " " + tetra.v3.point.z + ";";
 		v[3]= MString("spaceLocator -a -p ") + tetra.v4.point.x + " " + tetra.v4.point.y + " " + tetra.v4.point.z + ";";
 
-		for(int i=0;i<4;i++){
+	/*	for(int i=0;i<4;i++){
 			status = fDGModifier.commandToExecute(v[i]);
-		}
+		}*/
+		// create mesh
+		MPoint vertex[4] ={tetra.v1.point,tetra.v2.point,tetra.v3.point,tetra.v4.point};
+		MPointArray vertexArray(vertex, 4);
+		int counts[4] = {3,3,3,3};
+		MIntArray polyCounts(counts,4);
+		int connects[12] = {0,1,3,0,2,3,0,1,2,1,2,3};
+		MIntArray polyConnects(connects,12);
+		selListIter.getDependNode(dependNode);
+		newMesh = meshFn.create(4,4,vertexArray,polyCounts,polyConnects);
+
+		// assign shader
+		MObjectArray shaders, comps;
+		MFnSet setFn;
+		meshFn.setObject(dagPath);
+		meshFn.getConnectedSetsAndMembers(dagPath.instanceNumber(),shaders,comps,true);
+		setFn.setObject(shaders[0]);
+		setFn.addMember(newMesh);
 
 		fDGModifier.doIt();
+
+		// test ORIENT
+	/*	MPoint p(0,0,0,1);
+		double rst;
+		rst = voronoiShatter.orient(tetra.v1,tetra.v2,tetra.v3,p);
+		if(rst<0)
+			output = "under!";
+		else if(rst>0)
+			output = "above!";
+		else
+			output = "on!"; */
+		
+		// find point
+		MPoint p(0,0,0,1);
+		bool rst = voronoiShatter.findPoint(p, tetra);
+		if(rst){
+			output = MString("vertex:")+tetra.key;
+		}
 
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
