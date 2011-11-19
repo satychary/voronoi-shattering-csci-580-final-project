@@ -7,8 +7,12 @@
 #ifndef _voronoiShatter
 #define _voronoiShatter
 
+// Maya include
 #include <maya/MPoint.h>
 #include <maya/MBoundingBox.h>
+#include <maya/MMatrix.h>
+
+// STL include
 #include <map>
 #include <stack>
 
@@ -66,6 +70,9 @@ public:
 	// set bounding box
 	void setBoundingBox(MBoundingBox bbx);
 
+	// set transform matrix
+	void setTransformMatrix(MMatrix mx);
+
 private:
 
 	// Private method
@@ -107,6 +114,7 @@ private:
 
 	int currentKey;            // curent key value for new tehrahedron created
 	MBoundingBox boundingBox;  // bounding box of the mesh 
+	MMatrix      tMatrix;      // transform matrix
 };
 
 #endif
