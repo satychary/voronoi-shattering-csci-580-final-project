@@ -31,7 +31,8 @@
 #include <maya/MMatrix.h>
 #include <maya/MPointArray.h>
 #include <maya/MIntArray.h>
-
+#include <maya/MSyntax.h>
+#include <maya/MArgDatabase.h>
 #include <maya/MIOStream.h>
 #include <sstream>
 
@@ -43,6 +44,7 @@
 		return status;					\
 	}
 
+const char *numberFlag = "-n", *numberLongFlag = "-number";
 //	Description:
 //		voronoiShatterCmd constructor
 VoronoiShatterCmd::VoronoiShatterCmd(void){
@@ -61,6 +63,18 @@ VoronoiShatterCmd::~VoronoiShatterCmd(void){
 //		a new object of this type
 void* VoronoiShatterCmd::creator(){
 	return new VoronoiShatterCmd();
+}
+
+//	Description:
+//		add arguments 
+//	Return Value:
+//		
+MSyntax VoronoiShatterCmd::newSyntax(){
+	MSyntax syntax;
+    syntax.addFlag( numberFlag, numberLongFlag, MSyntax::kLong );
+//    syntax.addFlag( radiusFlag, radiusLongFlag, MSyntax::kDouble );
+
+	return syntax;
 }
 
 //	Description:
@@ -84,7 +98,7 @@ bool VoronoiShatterCmd::isUndoable() const{
 //		MS::kFailure - command failed (returning this value will cause the 
 //                     MEL script that is being run to terminate unless the
 //                     error is caught using a "catch" statement.
-MStatus VoronoiShatterCmd::doIt( const MArgList& )
+MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 {
 
 	//	MGlobal::displayInfo( "Hello Voronoi!\n" ); 
@@ -141,16 +155,17 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 		output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
 		output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
 		
-		// create bounding box
-		MString v[4];
+		// display bounding box
+/*		MString v[4];
 		v[0]= MString("spaceLocator -a -p ") + tetra.v1.point.x + " " + tetra.v1.point.y + " " + tetra.v1.point.z + ";";
 		v[1]= MString("spaceLocator -a -p ") + tetra.v2.point.x + " " + tetra.v2.point.y + " " + tetra.v2.point.z + ";";
 		v[2]= MString("spaceLocator -a -p ") + tetra.v3.point.x + " " + tetra.v3.point.y + " " + tetra.v3.point.z + ";";
 		v[3]= MString("spaceLocator -a -p ") + tetra.v4.point.x + " " + tetra.v4.point.y + " " + tetra.v4.point.z + ";";
-
+*/
 	/*	for(int i=0;i<4;i++){
 			status = fDGModifier.commandToExecute(v[i]);
 		}*/
+
 		// create mesh
 		MPoint vertex[4] ={tetra.v1.point,tetra.v2.point,tetra.v3.point,tetra.v4.point};
 		MPointArray vertexArray(vertex, 4);
@@ -169,6 +184,19 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 		setFn.setObject(shaders[0]);
 		setFn.addMember(newMesh);
 
+		// generate points
+		int numPoints = 3;
+		MArgDatabase argData( syntax(), args );
+		if( argData.isFlagSet( numberFlag ) )
+			argData.getFlagArgument( numberFlag, 0, numPoints );
+	//	num = 30;
+		MPoint* points;
+		MString locatorCmd;
+		points = voronoiShatter.generatePoints(numPoints);
+		for(int i=0;i<numPoints;i++){
+			locatorCmd = MString("spaceLocator -a -p ") + points[i].x + " " + points[i].y + " " + points[i].z + ";";
+			status = fDGModifier.commandToExecute(locatorCmd);
+		}
 		fDGModifier.doIt();
 
 		// test ORIENT
@@ -183,12 +211,12 @@ MStatus VoronoiShatterCmd::doIt( const MArgList& )
 			output = "on!"; */
 		
 		// find point
-		MPoint p(0,0,0,1);
+/*		MPoint p(0,0,0,1);
 		bool rst = voronoiShatter.findPoint(p, tetra);
 		if(rst){
 			output = MString("vertex:")+tetra.key;
 		}
-
+*/
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
 	}
