@@ -22,6 +22,7 @@ Tetrahedron VoronoiShatter::initializeBigTetra(){
 	Vertex topV, leftV, rightV, frontV;
 	Tetrahedron tetra;
 	min.z -=.5f;
+	min.y -=.5f;
 	// top
 	top.x = (min.x + max.x)/2;
 	top.y = 2*max.y - min.y;

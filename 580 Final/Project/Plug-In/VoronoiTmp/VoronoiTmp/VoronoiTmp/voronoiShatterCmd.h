@@ -26,10 +26,11 @@ public:
 	VoronoiShatterCmd(void);
 	~VoronoiShatterCmd(void);
 	static		void* creator();
+	static MSyntax newSyntax();
 
 	bool		isUndoable() const;
 
-	MStatus		doIt( const MArgList& );
+	MStatus		doIt( const MArgList &args);
 	MStatus		redoIt();
 	MStatus		undoIt();
 
