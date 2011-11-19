@@ -16,6 +16,10 @@ MPoint* VoronoiShatter::generatePoints(int total){
 	arrayMP =(MPoint*)malloc(sizeof(MPoint)*total); 
 	MPoint min =boundingBox.min();
 	MPoint max =boundingBox.max();
+
+	min *= tMatrix;
+	max *= tMatrix;
+
 	MPoint center;
 	center.x=(min.x+max.x)/2;
 	center.y=(min.y+max.y)/2;

@@ -18,6 +18,9 @@ Tetrahedron VoronoiShatter::initializeBigTetra(){
 	min = boundingBox.min();
 	max = boundingBox.max();
 	
+	min *= tMatrix;
+	max *= tMatrix;
+
 	MPoint top, left, right, front;
 	Vertex topV, leftV, rightV, frontV;
 	Tetrahedron tetra;

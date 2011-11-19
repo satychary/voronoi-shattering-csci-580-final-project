@@ -136,7 +136,6 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		selListIter.getDagPath(dagPath);
 		nodeFn.setObject(dagPath);
 		bbx = nodeFn.boundingBox();
-		voronoiShatter.setBoundingBox(bbx);
 
 		transformMx = nodeFn.parent(0);
 		nodeFn.setObject(transformMx);
@@ -149,6 +148,8 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		max *= mx;
 		min *= mx;
 
+		voronoiShatter.setTransformMatrix(mx);
+		voronoiShatter.setBoundingBox(bbx);
 		Tetrahedron tetra = voronoiShatter.initializeBigTetra();
 
 		MString output;
@@ -156,16 +157,20 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
 		
 		// display bounding box
-/*		MString v[4];
-		v[0]= MString("spaceLocator -a -p ") + tetra.v1.point.x + " " + tetra.v1.point.y + " " + tetra.v1.point.z + ";";
-		v[1]= MString("spaceLocator -a -p ") + tetra.v2.point.x + " " + tetra.v2.point.y + " " + tetra.v2.point.z + ";";
-		v[2]= MString("spaceLocator -a -p ") + tetra.v3.point.x + " " + tetra.v3.point.y + " " + tetra.v3.point.z + ";";
-		v[3]= MString("spaceLocator -a -p ") + tetra.v4.point.x + " " + tetra.v4.point.y + " " + tetra.v4.point.z + ";";
-*/
-	/*	for(int i=0;i<4;i++){
-			status = fDGModifier.commandToExecute(v[i]);
-		}*/
+/*		MString v[8];
+		v[0]= MString("spaceLocator -p ") + max.x + " " + max.y + " " + max.z + ";";
+		v[1]= MString("spaceLocator -p ") + max.x + " " + max.y + " " + min.z + ";";
+		v[2]= MString("spaceLocator -p ") + max.x + " " + min.y + " " + max.z + ";";
+		v[3]= MString("spaceLocator -p ") + max.x + " " + min.y + " " + min.z + ";";
 
+		v[4]= MString("spaceLocator -p ") + min.x + " " + max.y + " " + max.z + ";";
+		v[5]= MString("spaceLocator -p ") + min.x + " " + max.y + " " + min.z + ";";
+		v[6]= MString("spaceLocator -p ") + min.x + " " + min.y + " " + max.z + ";";
+		v[7]= MString("spaceLocator -p ") + min.x + " " + min.y + " " + min.z + ";";
+		for(int i=0;i<8;i++){
+			status = fDGModifier.commandToExecute(v[i]);
+		}
+*/
 		// create mesh
 		MPoint vertex[4] ={tetra.v1.point,tetra.v2.point,tetra.v3.point,tetra.v4.point};
 		MPointArray vertexArray(vertex, 4);
@@ -197,6 +202,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			locatorCmd = MString("spaceLocator -a -p ") + points[i].x + " " + points[i].y + " " + points[i].z + ";";
 			status = fDGModifier.commandToExecute(locatorCmd);
 		}
+
 		fDGModifier.doIt();
 
 		// test ORIENT

@@ -127,3 +127,13 @@ void VoronoiShatter::setBoundingBox(MBoundingBox bbx)
 {
 	boundingBox = bbx;
 }
+
+//	Description:
+//		set transform matrix
+//	Arguments:
+//		mx -- transform matrix to set
+//	Return Value;
+void VoronoiShatter::setTransformMatrix(MMatrix mx)
+{
+	tMatrix = mx;
+}
