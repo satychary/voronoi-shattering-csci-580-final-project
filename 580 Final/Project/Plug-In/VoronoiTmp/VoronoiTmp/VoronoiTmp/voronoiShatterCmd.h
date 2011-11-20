@@ -16,6 +16,7 @@
 // Function Sets
 //
 #include <maya/MFnComponentListData.h>
+#include <maya/MFnMesh.h>
 
 #include "Globals.h"
 
@@ -40,6 +41,9 @@ public:
 
 	MStatus		initModifierNode( MObject modifierNode );
 	MStatus		directModifier( MObject mesh );
+
+	MObject     createTetraMesh(Tetrahedron tetra, MFnMesh meshFn);
+	void        assignShader(MObject mesh, MFnMesh meshFn,MDagPath dagPath);
 
 private:
 
