@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="polyModifierCmd.h" />
     <ClInclude Include="polyModifierFty.h" />
     <ClInclude Include="polyModifierNode.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="voronoiShatterNode.cpp" />
     <ClCompile Include="vsFindPoint.cpp" />
     <ClCompile Include="vsFlip.cpp" />
+    <ClCompile Include="vsGeneratePoints.cpp" />
     <ClCompile Include="vsGetVDfromDT.cpp" />
     <ClCompile Include="vsInitializeBigTetra.cpp" />
     <ClCompile Include="vsInsertOnePoint.cpp" />
