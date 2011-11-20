@@ -57,7 +57,7 @@ public:
 	double inSphere(Vertex v1, Vertex v2, Vertex v3, Vertex v4, MPoint p);
 
 	bool findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
-	void findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
+	bool findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
 	MPoint* generatePoints(int total);
 	void insertOnePoint(MPoint p);     // B
 	void flip( int key, MPoint p );       
