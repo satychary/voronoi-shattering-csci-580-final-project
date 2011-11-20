@@ -58,7 +58,7 @@ public:
 	double orient(Vertex v1, Vertex v2, Vertex v3, MPoint p);             // R
 	double inSphere(Vertex v1, Vertex v2, Vertex v3, Vertex v4, MPoint p);
 
-	int findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
+	bool findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
 	bool findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
 	MPoint* generatePoints(int total);
 	void insertOnePoint(MPoint p);     // B
