@@ -119,6 +119,26 @@ bool VoronoiShatter::popTetra(int key, Tetrahedron &tetra)
 }
 
 //	Description:
+//		get the size of current pool
+//	Arguments:
+//		
+//	Return Value;
+int VoronoiShatter::getTetraNum()
+{
+	return tetraPool.size();
+}
+
+//	Description:
+//		get current pool
+//	Arguments:
+//		
+//	Return Value;
+TetraMap VoronoiShatter::getPool()
+{
+	return tetraPool;
+}
+
+//	Description:
 //		set bounding box
 //	Arguments:
 //		bbx -- bounding box to set

@@ -16,6 +16,8 @@
 #include <map>
 #include <stack>
 
+#include "Globals.h"
+
 //  struct 
 struct Tetrahedron;
 
@@ -56,7 +58,7 @@ public:
 	double orient(Vertex v1, Vertex v2, Vertex v3, MPoint p);             // R
 	double inSphere(Vertex v1, Vertex v2, Vertex v3, Vertex v4, MPoint p);
 
-	bool findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
+	int findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
 	bool findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
 	MPoint* generatePoints(int total);
 	void insertOnePoint(MPoint p);     // B
@@ -72,6 +74,11 @@ public:
 
 	// set transform matrix
 	void setTransformMatrix(MMatrix mx);
+
+	// get pool size
+	int getTetraNum();
+
+    TetraMap getPool();
 
 private:
 
@@ -107,10 +114,10 @@ private:
 	void replaceNeighbour( Tetrahedron &n, int oldkey, int newkey );
 
 	// Private member variable
+	std::stack<int> flipStack;
+
 	TetraMap tetraPool;         /* our pool where we put all tetrahedrons avaliable now, 
 	                               each associated with an unique interger key value */
-
-	std::stack<int> flipStack;
 
 	int currentKey;            // curent key value for new tehrahedron created
 	MBoundingBox boundingBox;  // bounding box of the mesh 

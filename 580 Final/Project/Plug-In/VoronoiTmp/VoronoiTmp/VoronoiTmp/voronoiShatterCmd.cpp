@@ -35,6 +35,7 @@
 #include <maya/MArgDatabase.h>
 #include <maya/MIOStream.h>
 #include <sstream>
+#include <map>
 
 // Status Checking Macro - MCheckStatus (Debugging tool)
 //
@@ -153,11 +154,12 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		Tetrahedron tetra = voronoiShatter.initializeBigTetra();
 
 		MString output;
-		output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
-		output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
+	//	output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
+	//	output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
 		
 		// display bounding box
-/*		MString v[8];
+        /**************************************************************************** 
+        MString v[8];
 		v[0]= MString("spaceLocator -p ") + max.x + " " + max.y + " " + max.z + ";";
 		v[1]= MString("spaceLocator -p ") + max.x + " " + max.y + " " + min.z + ";";
 		v[2]= MString("spaceLocator -p ") + max.x + " " + min.y + " " + max.z + ";";
@@ -170,8 +172,10 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		for(int i=0;i<8;i++){
 			status = fDGModifier.commandToExecute(v[i]);
 		}
-*/
-		// create mesh
+        //*****************************************************************************/
+		
+		// create big tetra mesh
+		//******************************************************************************		
 		MPoint vertex[4] ={tetra.v1.point,tetra.v2.point,tetra.v3.point,tetra.v4.point};
 		MPointArray vertexArray(vertex, 4);
 		int counts[4] = {3,3,3,3};
@@ -180,21 +184,23 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		MIntArray polyConnects(connects,12);
 		selListIter.getDependNode(dependNode);
 		newMesh = meshFn.create(4,4,vertexArray,polyCounts,polyConnects);
-
+		//********************************************************************************/
+		
 		// assign shader
+		//********************************************************************************	
 		MObjectArray shaders, comps;
 		MFnSet setFn;
 		meshFn.setObject(dagPath);
 		meshFn.getConnectedSetsAndMembers(dagPath.instanceNumber(),shaders,comps,true);
 		setFn.setObject(shaders[0]);
 		setFn.addMember(newMesh);
-
+		//********************************************************************************/
+		
 		// generate points
 		int numPoints = 3;
 		MArgDatabase argData( syntax(), args );
 		if( argData.isFlagSet( numberFlag ) )
 			argData.getFlagArgument( numberFlag, 0, numPoints );
-	//	num = 30;
 		MPoint* points;
 		MString locatorCmd;
 		points = voronoiShatter.generatePoints(numPoints);
@@ -203,10 +209,43 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			status = fDGModifier.commandToExecute(locatorCmd);
 		}
 
+		// Insert on point
+		/****************************************************
+		MPoint point(0,0,0,1);
+		voronoiShatter.insertOnePoint(point);
+		//**************************************************/
+
+		// add polygon
+		/**********************************************************************************
+		meshFn.setObject(newMesh);
+		TetraMap pool = voronoiShatter.getPool();
+		TetraMapItr itr= pool.begin();
+		for(;itr!=pool.end();itr++){
+			Tetrahedron tetra = itr->second;
+			MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
+			MPointArray vertexArr1(tri1, 3);
+
+			MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
+			MPointArray vertexArr2(tri2, 3);
+
+			MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
+			MPointArray vertexArr3(tri3, 3);
+
+			MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
+			MPointArray vertexArr4(tri4, 3);
+			
+			meshFn.addPolygon(vertexArr1);
+			meshFn.addPolygon(vertexArr2);
+			meshFn.addPolygon(vertexArr3);
+			meshFn.addPolygon(vertexArr4);
+		}
+		//********************************************************************************/
+
 		fDGModifier.doIt();
 
 		// test ORIENT
-	/*	MPoint p(0,0,0,1);
+		/**********************************************************************************	
+		MPoint p(0,0,0,1);
 		double rst;
 		rst = voronoiShatter.orient(tetra.v1,tetra.v2,tetra.v3,p);
 		if(rst<0)
@@ -214,15 +253,19 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		else if(rst>0)
 			output = "above!";
 		else
-			output = "on!"; */
+			output = "on!"; 
+		//***********************************************************************************/
 		
 		// find point
-/*		MPoint p(0,0,0,1);
+		//*************************************************************************************		
+		MPoint p(0,0,0,1);
 		bool rst = voronoiShatter.findPoint(p, tetra);
 		if(rst){
 			output = MString("vertex:")+tetra.key;
 		}
-*/
+		else
+			output = MString("Nt Found!");
+		//************************************************************************************/
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
 	}
