@@ -3,7 +3,7 @@
 
 VoronoiShatter::VoronoiShatter(void)
 {
-	currentKey = 0;
+	currentKey = 1;
 }
 
 
