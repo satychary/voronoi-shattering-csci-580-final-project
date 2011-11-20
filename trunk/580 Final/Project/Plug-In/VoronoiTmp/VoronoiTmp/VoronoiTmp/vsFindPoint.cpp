@@ -46,7 +46,7 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 						// change neighbor and change the vertex, then continue
 						if(findNeighbor(tetra.v1,tetra.v2,tetra.v3,tetra))
 						{
-							no_neighbor1=false;
+							//no_neighbor1=false;
 							break;
 						}
 						else
@@ -63,7 +63,7 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					{
 						if(findNeighbor(tetra.v1,tetra.v2,tetra.v4,tetra))
 						{
-							no_neighbor2=false;
+							//no_neighbor2=false;
 							break;
 						}
 						else
@@ -80,7 +80,7 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					{
 						if(findNeighbor(tetra.v1,tetra.v3,tetra.v4,tetra))
 						{
-							no_neighbor3=false;
+							//no_neighbor3=false;
 							break;
 						}
 						else
@@ -97,7 +97,7 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					{
 						if(findNeighbor(tetra.v2,tetra.v3,tetra.v4,tetra))
 						{
-							no_neighbor4=false;
+							//no_neighbor4=false;
 							break;
 						}
 						else
@@ -108,7 +108,8 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 				}
 			default:
 				{
-					if(no_neighbor1&&no_neighbor2&&no_neighbor3&&no_neighbor4)
+					//if(no_neighbor1&&no_neighbor2&&no_neighbor3&&no_neighbor4)
+					if(no_neighbor1||no_neighbor2||no_neighbor3||no_neighbor4)
 					{
 						final_result=false;
 						break1=true;
