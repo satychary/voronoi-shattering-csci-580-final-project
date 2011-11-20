@@ -12,13 +12,17 @@
 //
 //	Return Value: one key indicate where the point locate
 bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
-	int current;
+/*	int current;
 	current= tetra.key;
 	if(!getTetra(current, tetra))
 	{
 		cout<<"Can't retreive the tetrahedron at vsFindPoint";
 		return false;
 	}
+	*/
+	if(!firstTetra(tetra))
+		return false;
+
 	bool break1=false;
 	int beginfacet=1;
 	int result;
