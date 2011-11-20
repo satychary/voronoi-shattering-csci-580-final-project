@@ -17,6 +17,8 @@
 //
 #include <maya/MFnComponentListData.h>
 
+#include "Globals.h"
+
 // Forward Class Declarations
 //
 class MArgList;
