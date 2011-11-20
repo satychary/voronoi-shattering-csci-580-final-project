@@ -197,6 +197,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//********************************************************************************/
 		
 		// generate points
+		//*******************************************************************************************************
 		int numPoints = 3;
 		MArgDatabase argData( syntax(), args );
 		if( argData.isFlagSet( numberFlag ) )
@@ -208,6 +209,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			locatorCmd = MString("spaceLocator -a -p ") + points[i].x + " " + points[i].y + " " + points[i].z + ";";
 			status = fDGModifier.commandToExecute(locatorCmd);
 		}
+		/************************************************************************************************************/
 
 		// Insert on point
 		/****************************************************
@@ -241,8 +243,6 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		}
 		//********************************************************************************/
 
-		fDGModifier.doIt();
-
 		// test ORIENT
 		/**********************************************************************************	
 		MPoint p(0,0,0,1);
@@ -257,15 +257,20 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//***********************************************************************************/
 		
 		// find point
-		//*************************************************************************************		
-		MPoint p(0,0,0,1);
+		/*************************************************************************************		
+		MPoint p(0,10,0,1);
+		MString cmd = MString("spaceLocator -p ") + p.x + " " + p.y + " " + p.z + ";";
+		fDGModifier.commandToExecute(cmd);
+
 		bool rst = voronoiShatter.findPoint(p, tetra);
 		if(rst){
-			output = MString("vertex:")+tetra.key;
+			output = MString("Found! ")+tetra.key;
 		}
 		else
-			output = MString("Nt Found!");
+			output = MString("Not Found!");
 		//************************************************************************************/
+
+		fDGModifier.doIt();
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
 	}
