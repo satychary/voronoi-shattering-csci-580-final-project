@@ -36,6 +36,9 @@
     <ClInclude Include="polyModifierNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="voronoiShatterFty.cpp">
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vsPerform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vsGeneratePoints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
