@@ -175,19 +175,12 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
         //*****************************************************************************/
 		
 		// create big tetra mesh
-		//******************************************************************************		
-		MPoint vertex[4] ={tetra.v1.point,tetra.v2.point,tetra.v3.point,tetra.v4.point};
-		MPointArray vertexArray(vertex, 4);
-		int counts[4] = {3,3,3,3};
-		MIntArray polyCounts(counts,4);
-		int connects[12] = {0,1,3,0,2,3,0,1,2,1,2,3};
-		MIntArray polyConnects(connects,12);
-		selListIter.getDependNode(dependNode);
-		newMesh = meshFn.create(4,4,vertexArray,polyCounts,polyConnects);
+		/******************************************************************************		
+		newMesh = createTetraMesh(tetra, meshFn);
 		//********************************************************************************/
 		
 		// assign shader
-		//********************************************************************************	
+		/********************************************************************************	
 		MObjectArray shaders, comps;
 		MFnSet setFn;
 		meshFn.setObject(dagPath);
@@ -197,7 +190,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//********************************************************************************/
 		
 		// generate points
-		//*******************************************************************************************************
+		/*******************************************************************************************************
 		int numPoints = 3;
 		MArgDatabase argData( syntax(), args );
 		if( argData.isFlagSet( numberFlag ) )
@@ -212,19 +205,21 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		/************************************************************************************************************/
 
 		// Insert on point
-		/****************************************************
+		//****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
 		//**************************************************/
 
 		// add polygon
-		/**********************************************************************************
+		//**********************************************************************************
 		meshFn.setObject(newMesh);
 		TetraMap pool = voronoiShatter.getPool();
 		TetraMapItr itr= pool.begin();
 		for(;itr!=pool.end();itr++){
 			Tetrahedron tetra = itr->second;
-			MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
+			newMesh = createTetraMesh(tetra,meshFn);
+			assignShader(newMesh, meshFn,dagPath);
+			/*MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
 			MPointArray vertexArr1(tri1, 3);
 
 			MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
@@ -236,11 +231,12 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
 			MPointArray vertexArr4(tri4, 3);
 			
-			meshFn.addPolygon(vertexArr1);
-			meshFn.addPolygon(vertexArr2);
-			meshFn.addPolygon(vertexArr3);
-			meshFn.addPolygon(vertexArr4);
+			//meshFn.addPolygon(vertexArr1);
+			//meshFn.addPolygon(vertexArr2);
+			//meshFn.addPolygon(vertexArr3);
+			//meshFn.addPolygon(vertexArr4);*/
 		}
+		output = MString("Num of tetra:") + pool.size();
 		//********************************************************************************/
 
 		// test ORIENT
@@ -258,7 +254,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		
 		// find point
 		/*************************************************************************************		
-		MPoint p(0,10,0,1);
+		MPoint p(0,0,0,1);
 		MString cmd = MString("spaceLocator -p ") + p.x + " " + p.y + " " + p.z + ";";
 		fDGModifier.commandToExecute(cmd);
 
@@ -369,4 +365,44 @@ MStatus VoronoiShatterCmd::directModifier( MObject mesh ){
 	status = voronoiShatterFactory.doIt();
 
 	return status;
+}
+
+//	Description:
+//		create a tetra mesh
+//	Arguments:
+//		tetra  -- the tetra which the mesh based on
+//      meshFn -- MFnMesh
+//	Return Value:
+//		the result mesh
+MObject VoronoiShatterCmd::createTetraMesh(Tetrahedron tetra, MFnMesh meshFn)
+{
+	MObject newMesh;
+	
+	MPoint vertex[4] ={tetra.v1.point,tetra.v2.point,tetra.v3.point,tetra.v4.point};
+	MPointArray vertexArray(vertex, 4);
+	int counts[4] = {3,3,3,3};
+	MIntArray polyCounts(counts,4);
+	int connects[12] = {0,1,3,0,2,3,0,1,2,1,2,3};
+	MIntArray polyConnects(connects,12);
+	newMesh = meshFn.create(4,4,vertexArray,polyCounts,polyConnects);
+	
+	return newMesh;
+
+}
+
+//	Description:
+//		add a mesh to a shadering group
+//	Arguments:
+//		mesh     -- mesh to be assign
+//		meshFn   -- MFnMesh function set
+//		MDagPath -- MDagPath
+//	Return Value:
+void VoronoiShatterCmd::assignShader(MObject mesh, MFnMesh meshFn, MDagPath dagPath)
+{
+	MObjectArray shaders, comps;
+	MFnSet setFn;
+	meshFn.setObject(dagPath);
+	meshFn.getConnectedSetsAndMembers(dagPath.instanceNumber(),shaders,comps,true);
+	setFn.setObject(shaders[0]);
+	setFn.addMember(mesh);
 }
