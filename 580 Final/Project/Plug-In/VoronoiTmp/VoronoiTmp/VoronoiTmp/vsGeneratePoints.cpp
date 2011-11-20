@@ -26,12 +26,13 @@ MPoint* VoronoiShatter::generatePoints(int total){
 	center.x=(min.x+max.x)/2;
 	center.y=(min.y+max.y)/2;
 	center.z=(min.z+max.z)/2;
-	center.z=1.0;
+	center.w=1.0;
 	double length= sqrt(pow((max.x-min.x),2)+pow((max.y-min.y),2)+pow((max.z-min.z),2))/2;
 	int condition=1;
+	srand ( time(NULL) );
 	for(int i=0; i<total;)
 	{
-		srand ( time(NULL) );
+		//srand ( time(NULL) );
 		double x = pow(-1.0,rand())*rand();
 		double y = pow(-1.0,rand())*rand();
 		double z = pow(-1.0,rand())*rand();
