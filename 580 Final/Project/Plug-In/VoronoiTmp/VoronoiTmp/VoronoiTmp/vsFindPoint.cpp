@@ -18,14 +18,22 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 	{
 		cout<<"Can't retreive the tetrahedron at vsFindPoint";
 	}
-
 	bool break1=false;
 	int beginfacet=1;
 	int result;
+	bool no_neighbor1;
+	bool no_neighbor2;
+	bool no_neighbor3;
+	bool no_neighbor4;
+	bool final_result=false;
 	MPoint temp_p;
-	while(break1)
+	while(!break1)
 	{
 		result=0;
+		no_neighbor1=false;
+		no_neighbor2=false;
+		no_neighbor3=false;
+		no_neighbor4=false;
 		switch (beginfacet)
 		{
 			case 1:
@@ -35,8 +43,15 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					if(result<0)
 					{
 						// change neighbor and change the vertex, then continue
-						findNeighbor(tetra.v1,tetra.v2,tetra.v3,tetra);
-						break;
+						if(findNeighbor(tetra.v1,tetra.v2,tetra.v3,tetra))
+						{
+							no_neighbor1=false;
+							break;
+						}
+						else
+						{
+							no_neighbor1=true;
+						}
 					}
 				}
 			case 2:
@@ -45,9 +60,15 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					result=orient(tetra.v1,tetra.v2,tetra.v4,P)*orient(tetra.v1,tetra.v2,tetra.v4,temp_p);
 					if(result<0)
 					{
-						findNeighbor(tetra.v1,tetra.v2,tetra.v4,tetra);
-						// change neighbor and change the vertex, then continue
-						break;
+						if(findNeighbor(tetra.v1,tetra.v2,tetra.v4,tetra))
+						{
+							no_neighbor2=false;
+							break;
+						}
+						else
+						{
+							no_neighbor2=true;
+						}
 					}
 				}
 			case 3:
@@ -56,9 +77,15 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					result=orient(tetra.v1,tetra.v3,tetra.v4,P)*orient(tetra.v1,tetra.v3,tetra.v4,temp_p);
 					if(result<0)
 					{
-						findNeighbor(tetra.v1,tetra.v3,tetra.v4,tetra);
-						// change neighbor and change the vertex, then continue
-						break;
+						if(findNeighbor(tetra.v1,tetra.v3,tetra.v4,tetra))
+						{
+							no_neighbor3=false;
+							break;
+						}
+						else
+						{
+							no_neighbor3=true;
+						}
 					}
 				}
 			case 4:
@@ -67,121 +94,159 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 					result=orient(tetra.v2,tetra.v3,tetra.v4,P)*orient(tetra.v2,tetra.v3,tetra.v4,temp_p);
 					if(result<0)
 					{
-						findNeighbor(tetra.v2,tetra.v3,tetra.v4,tetra);
-						// change neighbor and change the vertex, then continue
-						break;
+						if(findNeighbor(tetra.v2,tetra.v3,tetra.v4,tetra))
+						{
+							no_neighbor4=false;
+							break;
+						}
+						else
+						{
+							no_neighbor4=true;
+						}
 					}
 				}
 			default:
 				{
-					break1=true;
-					break;
+					if(no_neighbor1&&no_neighbor2&&no_neighbor3&&no_neighbor4)
+					{
+						final_result=false;
+						break1=true;
+						break;
+					}
+					else
+					{
+						final_result=true;
+						break1=true;						
+						break;
+					}
 				}
 		}
 	}
-
-	return break1;
+	return final_result;
 }
-void VoronoiShatter::findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra)
+bool VoronoiShatter::findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra)
 {
 	int orign= tetra.key;
 	Tetrahedron temp_tetra;
 	int start=1;
 	int equal_num=0;
-	switch (start)
-	{
+	bool break2=false;
+	bool findNeighbor_result=false;
+		switch (start)
+		{
 		case 1:
-				getTetra(tetra.neighbour1,temp_tetra);
-				if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+				equal_num=0;
+				if(getTetra(tetra.neighbour1,temp_tetra))
 				{
-					equal_num++;
-				}
-				if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(equal_num>=3)
-				{
-					getTetra(temp_tetra.key,tetra);
-					break;
+					if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(equal_num>=3)
+					{
+						getTetra(temp_tetra.key,tetra);
+						findNeighbor_result=true;
+						break;
+					}
 				}
 		case 2:
-				getTetra(tetra.neighbour2,temp_tetra);
-				if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+				equal_num=0;
+				if(getTetra(tetra.neighbour2,temp_tetra))
 				{
-					equal_num++;
+					if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(equal_num>=3)
+					{
+						getTetra(temp_tetra.key,tetra);
+						findNeighbor_result=true;
+						break;
+					}
 				}
-				if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(equal_num>=3)
-				{
-					getTetra(temp_tetra.key,tetra);
-					break;
-				}
+				
 		case 3:
-				getTetra(tetra.neighbour3,temp_tetra);
-				if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+				equal_num=0;
+				if(getTetra(tetra.neighbour3,temp_tetra))
 				{
-					equal_num++;
+					if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(equal_num>=3)
+					{
+						getTetra(temp_tetra.key,tetra);
+						findNeighbor_result=true;
+						break;
+					}
 				}
-				if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(equal_num>=3)
-				{
-					getTetra(temp_tetra.key,tetra);
-					break;
-				}
+			
 		case 4:
-				getTetra(tetra.neighbour4,temp_tetra);
-				if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+				equal_num=0;
+				if(getTetra(tetra.neighbour4,temp_tetra))
 				{
-					equal_num++;
+					if(temp_tetra.v1.point==tetra.v1.point || temp_tetra.v1.point==tetra.v2.point ||temp_tetra.v1.point==tetra.v3.point || temp_tetra.v1.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
+					{
+						equal_num++;
+					}
+					if(equal_num>=3)
+					{
+						getTetra(temp_tetra.key,tetra);
+						findNeighbor_result=true;
+						break;
+					}
 				}
-				if(temp_tetra.v2.point==tetra.v1.point || temp_tetra.v2.point==tetra.v2.point ||temp_tetra.v2.point==tetra.v3.point || temp_tetra.v2.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v3.point==tetra.v1.point || temp_tetra.v3.point==tetra.v2.point ||temp_tetra.v3.point==tetra.v3.point || temp_tetra.v3.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(temp_tetra.v4.point==tetra.v1.point || temp_tetra.v4.point==tetra.v2.point ||temp_tetra.v4.point==tetra.v3.point || temp_tetra.v4.point==tetra.v4.point)
-				{
-					equal_num++;
-				}
-				if(equal_num>=3)
-				{
-					getTetra(temp_tetra.key,tetra);
-					break;
-				}
-	}
-	return ;
+		default:
+			findNeighbor_result=false;
+			break;
+		}
+	return findNeighbor_result;
 }
