@@ -470,11 +470,11 @@ bool VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	}
 
 	// then third
-	if( getTetra( getNeighborByVertices( third, p, a, d ), n ) ) {
+	if( getTetra( getNeighborByVertices( third, p, a, d ), n )) {
 		replaceNeighbour( n, third.key, pacd.key );
 		updateTetra(n);
 	}
-	if( getTetra( getNeighborByVertices( third, p, b, d ), n ) {
+	if( getTetra( getNeighborByVertices( third, p, b, d ), n )) {
 		replaceNeighbour( n, third.key, pbcd.key );
 		updateTetra(n);
 	}
