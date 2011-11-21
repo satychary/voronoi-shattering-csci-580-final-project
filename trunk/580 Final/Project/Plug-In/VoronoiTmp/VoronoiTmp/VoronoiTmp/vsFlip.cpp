@@ -11,12 +11,13 @@
 //	Arguments:
 //
 //	Return Value;
-void VoronoiShatter::flip( int key, MPoint p ){
+bool VoronoiShatter::flip( int key, MPoint p ){
 
 	Tetrahedron t, ta;
 	Vertex a,b,c,d;
 
-	getTetra( key, t);
+	if( getTetra( key, t ) );
+	else return false;
 	
 	// find abc
 	if( t.v1.point == p )
@@ -43,7 +44,7 @@ void VoronoiShatter::flip( int key, MPoint p ){
 		b = t.v2;
 		c = t.v3;
 	}
-	else; //assert
+	else return false;
 
 	//Tetrahedron ta;
 
@@ -51,20 +52,24 @@ void VoronoiShatter::flip( int key, MPoint p ){
 	switch( getNeighborByVertices( t, a.point, b.point, c.point ) )
 	{
 	case 1:
-		getTetra( t.neighbour1, ta );
+		if( getTetra( t.neighbour1, ta ) );
+		else return false;
 		break;
 	case 2:
-		getTetra( t.neighbour2, ta );
+		if( getTetra( t.neighbour2, ta ) );
+		else return false;
 		break;
 	case 3:
-		getTetra( t.neighbour3, ta );
+		if( getTetra( t.neighbour3, ta ) );
+		else return false;
 		break;
 	case 4:
-		getTetra( t.neighbour4, ta );
+		if( getTetra( t.neighbour4, ta ) );
+		else return false;
 		break;
-	default:
-		//assert
-		break;
+	case -1:
+		//no such neightbour, return
+		return false;
 	}
 
 	// determine d
@@ -82,14 +87,14 @@ void VoronoiShatter::flip( int key, MPoint p ){
 	case 4:
 		d = ta.v4;
 		break;
-	default:
-		//assert
-		break;
+	case -1:
+		//can't find d.
+		return false;
 	}
 
 	// if d is outside the circumsphere, don't flip
 	if( inSphere( t.v1, t.v2, t.v3, t.v4, d.point ) <= 0 )
-		return;
+		return true;
 
 	// determine cases
 	int flipCase = 0;
@@ -159,31 +164,37 @@ void VoronoiShatter::flip( int key, MPoint p ){
 
 	// now the cases are decided.
 	// happy flipping time
+	bool result;
+
 	switch( flipCase )
 	{
 	case 1:
 	case 4:
-		flip23( t, ta, a.point, b.point, c.point, d.point, p );
+		result = flip23( t, ta, a.point, b.point, c.point, d.point, p );
 		break;
 	case 2:
-		flip32( t, ta, a.point, b.point, c.point, d.point, p );
+		result = flip32( t, ta, a.point, b.point, c.point, d.point, p );
 		break;
 	case 3:
-		flip44( t, ta, a.point, b.point, c.point, d.point, p );
+		result = flip44( t, ta, a.point, b.point, c.point, d.point, p );
 		break;	
 	}
 
-	return;
+	return result;
 }
 
-void VoronoiShatter::flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p )
+bool VoronoiShatter::flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p )
 {
 	// abc is already swapped so that pdab is coplanar
 	// test config 44 =  find tb, tc
 	Tetrahedron tb, tc;
 
-	getTetra( getNeighborByVertices( t, a, b, p ), tb ); //abpk
-	getTetra( getNeighborByVertices( ta, a, b, d ) , tc ); //abdk
+	//abpk
+	if( getTetra( getNeighborByVertices( t, a, b, p ), tb ) );
+	else return false;
+	//abdk
+	if( getTetra( getNeighborByVertices( ta, a, b, d ) , tc ));
+	else return false;
 
 	MPoint kb, kc;
 	switch( getd( tb, a, b, p ) )
@@ -200,6 +211,8 @@ void VoronoiShatter::flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	case 4:
 		kb = tb.v4.point;
 		break;
+	case -1:
+		return false;
 	}
 
 	switch( getd( tc, a, b, d ) )
@@ -216,10 +229,12 @@ void VoronoiShatter::flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	case 4:
 		kc = tc.v4.point;
 		break;
+	case -1:
+		return false;
 	}
 
 	// t, ta, tb, tc are NOT in config 44.
-	if( kb != kc ) return;
+	if( kb != kc ) return true;
 	// else they are.
 
 	//create 4 new tetrahedron
@@ -286,33 +301,41 @@ void VoronoiShatter::flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	Tetrahedron n;
 
 	// start with neighbours of t
-	getTetra( getNeighborByVertices( t, p, a, c ), n );
-	replaceNeighbour( n, t.key, ckap.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( t, p, b, c ), n );
-	replaceNeighbour( n, t.key, ckbp.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( t, p, a, c ), n ) ) {
+		replaceNeighbour( n, t.key, ckap.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( t, p, b, c ), n ) ) {
+		replaceNeighbour( n, t.key, ckbp.key );
+		updateTetra(n);
+	}
 	// then ta
-	getTetra( getNeighborByVertices( ta, b, c, d ), n );
-	replaceNeighbour( n, ta.key, ckbd.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( ta, a, c, d ), n );
-	replaceNeighbour( n, ta.key, ckad.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( ta, b, c, d ), n ) ) {
+		replaceNeighbour( n, ta.key, ckbd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( ta, a, c, d ), n ) ) {
+		replaceNeighbour( n, ta.key, ckad.key );
+		updateTetra(n);
+	}
 	// then tb
-	getTetra( getNeighborByVertices( tb, a, p, kc ), n );
-	replaceNeighbour( n, tb.key, ckap.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( tb, b, p, kc ), n );
-	replaceNeighbour( n, tb.key, ckbp.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( tb, a, p, kc ), n ) ) {
+		replaceNeighbour( n, tb.key, ckap.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( tb, b, p, kc ), n ) ) {
+		replaceNeighbour( n, tb.key, ckbp.key );
+		updateTetra(n);
+	}
 	// finally tc
-	getTetra( getNeighborByVertices( tc, a, d, kc ), n );
-	replaceNeighbour( n, tc.key, ckad.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( tc, b, d, kc ), n );
-	replaceNeighbour( n, tc.key, ckbd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( tc, a, d, kc ), n ) ) {
+		replaceNeighbour( n, tc.key, ckad.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( tc, b, d, kc ), n ) ) {
+		replaceNeighbour( n, tc.key, ckbd.key );
+		updateTetra(n);
+	}
 
 	// done with old tetras
 
@@ -328,10 +351,10 @@ void VoronoiShatter::flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	flipStack.push( ckbd.key );
 	flipStack.push( ckbp.key );
 
-	return;
+	return true;
 	
 }
-void VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p )
+bool VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p )
 {
 
 	// find pdab (or maybe pdac, pdbc)
@@ -339,21 +362,28 @@ void VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	int found = 0;
 
 	// test pdab first
-	getTetra( getNeighborByVertices( t, p, a, b ), third );
+	if( getTetra( getNeighborByVertices( t, p, a, b ), third ) );
+	return false;
+
 	if( isInTetrahedron( third, d ) ) found = 1;
+
 	// if not found, pdac
 	if( found == 0 ) {
-		getTetra( getNeighborByVertices( t, p, a, c ), third );
+		if( getTetra( getNeighborByVertices( t, p, a, c ), third ) );
+		else return false;
+
 		if( isInTetrahedron( third, d ) ) found = 2;
 	}
 	// then pdbc
 	if( found == 0 ) {
-		getTetra( getNeighborByVertices( t, p, b, c ), third );
+		if( getTetra( getNeighborByVertices( t, p, b, c ), third ) );
+		else return false;
+
 		if( isInTetrahedron( third, d ) ) found = 3;
 	}
 	
 	// no flip if there is no such tetrahedron
-	if( found == 0 ) return;
+	if( found == 0 ) return true;
 
 	// found = 1 : pacd & pbcd
 	// found = 2 : pabd & pbcd
@@ -420,28 +450,34 @@ void VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	Tetrahedron n;
 
 	// start with neighbours of t
-	getTetra( getNeighborByVertices( t, p, a, c ), n );
-	replaceNeighbour( n, t.key, pacd.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( t, p, b, c ), n );
-	replaceNeighbour( n, t.key, pbcd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( t, p, a, c ), n ) ) {
+		replaceNeighbour( n, t.key, pacd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( t, p, b, c ), n ) ) {
+		replaceNeighbour( n, t.key, pbcd.key );
+		updateTetra(n);
+	}
 
 	// then ta
-	getTetra( getNeighborByVertices( ta, d, a, c ), n );
-	replaceNeighbour( n, ta.key, pacd.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( ta, d, b, c ), n );
-	replaceNeighbour( n, ta.key, pbcd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( ta, d, a, c ), n ) ) {
+		replaceNeighbour( n, ta.key, pacd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( ta, d, b, c ), n ) ) {
+		replaceNeighbour( n, ta.key, pbcd.key );
+		updateTetra(n);
+	}
 
 	// then third
-	getTetra( getNeighborByVertices( third, p, a, d ), n );
-	replaceNeighbour( n, third.key, pacd.key );
-	updateTetra(n);
-	getTetra( getNeighborByVertices( third, p, b, d ), n );
-	replaceNeighbour( n, third.key, pbcd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( third, p, a, d ), n ) ) {
+		replaceNeighbour( n, third.key, pacd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( third, p, b, d ), n ) {
+		replaceNeighbour( n, third.key, pbcd.key );
+		updateTetra(n);
+	}
 
 	// delete t,ta,third
 	deleteTetra( t.key );
@@ -452,11 +488,11 @@ void VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	flipStack.push( pacd.key );
 	flipStack.push( pbcd.key );
 
-	return;
+	return true;
 	
 }
 
-void VoronoiShatter::flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p )
+bool VoronoiShatter::flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p )
 {
 
 	// create 3 new tetrahedra
@@ -509,30 +545,33 @@ void VoronoiShatter::flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	Tetrahedron n;
 
 	// start with neighbours of t
-	getTetra( getNeighborByVertices( t, a, b, p ), n );
-	replaceNeighbour( n, t.key, pabd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( t, a, b, p ), n ) ) {
+		replaceNeighbour( n, t.key, pabd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( t, a, c, p ), n ) ) {
+		replaceNeighbour( n, t.key, pacd.key );
+		updateTetra(n);
+	}
 
-	getTetra( getNeighborByVertices( t, a, c, p ), n );
-	replaceNeighbour( n, t.key, pacd.key );
-	updateTetra(n);
-
-	getTetra( getNeighborByVertices( t, b, c, p ), n );
-	replaceNeighbour( n, t.key, pbcd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( t, b, c, p ), n ) ) {
+		replaceNeighbour( n, t.key, pbcd.key );
+		updateTetra(n);
+	}
 
 	// then neighbours of ta
-	getTetra( getNeighborByVertices( ta, a, b, d ), n );
-	replaceNeighbour( n, ta.key, pabd.key );
-	updateTetra(n);
-
-	getTetra( getNeighborByVertices( ta, a, c, d ), n );
-	replaceNeighbour( n, ta.key, pacd.key );
-	updateTetra(n);
-
-	getTetra( getNeighborByVertices( ta, b, c, d ), n );
-	replaceNeighbour( n, ta.key, pbcd.key );
-	updateTetra(n);
+	if( getTetra( getNeighborByVertices( ta, a, b, d ), n ) ) {
+		replaceNeighbour( n, ta.key, pabd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( ta, a, c, d ), n ) ) {
+		replaceNeighbour( n, ta.key, pacd.key );
+		updateTetra(n);
+	}
+	if( getTetra( getNeighborByVertices( ta, b, c, d ), n ) ) {
+		replaceNeighbour( n, ta.key, pbcd.key );
+		updateTetra(n);
+	}
 
 	// done with updating neighbours
 	// delete t and ta
@@ -545,7 +584,7 @@ void VoronoiShatter::flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 	flipStack.push( pbcd.key );
 	flipStack.push( pacd.key );
 
-	return;
+	return true;
 }
 
 //assistant
