@@ -46,6 +46,7 @@
 	}
 
 const char *numberFlag = "-n", *numberLongFlag = "-number";
+const char *sectionFlag = "-s", *sectionLongFlag = "-section";
 //	Description:
 //		voronoiShatterCmd constructor
 VoronoiShatterCmd::VoronoiShatterCmd(void){
@@ -73,6 +74,7 @@ void* VoronoiShatterCmd::creator(){
 MSyntax VoronoiShatterCmd::newSyntax(){
 	MSyntax syntax;
     syntax.addFlag( numberFlag, numberLongFlag, MSyntax::kLong );
+	syntax.addFlag( sectionFlag, sectionLongFlag, MSyntax::kLong );
 //    syntax.addFlag( radiusFlag, radiusLongFlag, MSyntax::kDouble );
 
 	return syntax;
@@ -190,14 +192,18 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//********************************************************************************/
 		
 		// generate points
-		/*******************************************************************************************************
+		//*******************************************************************************************************
 		int numPoints = 3;
+		int numSections = 1;
 		MArgDatabase argData( syntax(), args );
 		if( argData.isFlagSet( numberFlag ) )
 			argData.getFlagArgument( numberFlag, 0, numPoints );
+		if( argData.isFlagSet( sectionFlag ) )
+			argData.getFlagArgument( sectionFlag, 0, numSections );
+
 		MPoint* points;
 		MString locatorCmd;
-		points = voronoiShatter.generatePoints(numPoints);
+		points = voronoiShatter.generatePoints(numPoints,numSections);
 		for(int i=0;i<numPoints;i++){
 			locatorCmd = MString("spaceLocator -a -p ") + points[i].x + " " + points[i].y + " " + points[i].z + ";";
 			status = fDGModifier.commandToExecute(locatorCmd);
@@ -205,13 +211,13 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		/************************************************************************************************************/
 
 		// Insert on point
-		//****************************************************
+		/****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
 		//**************************************************/
 
 		// add polygon
-		//**********************************************************************************
+		/**********************************************************************************
 		meshFn.setObject(newMesh);
 		TetraMap pool = voronoiShatter.getPool();
 		TetraMapItr itr= pool.begin();
@@ -219,24 +225,24 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			Tetrahedron tetra = itr->second;
 			newMesh = createTetraMesh(tetra,meshFn);
 			assignShader(newMesh, meshFn,dagPath);
-			/*MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
-			MPointArray vertexArr1(tri1, 3);
+			//MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
+			//MPointArray vertexArr1(tri1, 3);
 
-			MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
-			MPointArray vertexArr2(tri2, 3);
+			//MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
+			//MPointArray vertexArr2(tri2, 3);
 
-			MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
-			MPointArray vertexArr3(tri3, 3);
+			//MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
+			//MPointArray vertexArr3(tri3, 3);
 
-			MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
-			MPointArray vertexArr4(tri4, 3);
+			//MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
+			//MPointArray vertexArr4(tri4, 3);
 			
 			//meshFn.addPolygon(vertexArr1);
 			//meshFn.addPolygon(vertexArr2);
 			//meshFn.addPolygon(vertexArr3);
-			//meshFn.addPolygon(vertexArr4);*/
+			//meshFn.addPolygon(vertexArr4);
 		}
-		output = MString("Num of tetra:") + pool.size();
+		MString output = MString("Num of tetra:") + pool.size();
 		//********************************************************************************/
 
 		// test ORIENT
