@@ -62,7 +62,7 @@ public:
 	bool findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
 	MPoint* generatePoints(int total,int section);
 	void insertOnePoint(MPoint p);     // B
-	void flip( int key, MPoint p );       
+	bool flip( int key, MPoint p );       
 
 	void getVDFormDT();        // CZ
 
@@ -108,9 +108,9 @@ private:
 	int getd( Tetrahedron &t, MPoint a, MPoint b, MPoint c );
 
 	//assistant function in flip
-	void flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
-	void flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
-	void flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
+	bool flip23( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
+	bool flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
+	bool flip44( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, MPoint c, MPoint d, MPoint p );
 	void replaceNeighbour( Tetrahedron &n, int oldkey, int newkey );
 
 	// Private member variable

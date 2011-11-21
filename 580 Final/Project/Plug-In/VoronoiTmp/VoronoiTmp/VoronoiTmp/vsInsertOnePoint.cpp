@@ -76,21 +76,25 @@ void VoronoiShatter::insertOnePoint(MPoint p){
 	// update the neighbours of t
 	Tetrahedron n;
 
-	getTetra( t1.neighbour1, n );
-	replaceNeighbour( n, t.key, t1.key );
-	updateTetra(n);
+	if( getTetra( t1.neighbour1, n ) ) {
+		replaceNeighbour( n, t.key, t1.key );
+		updateTetra(n);
+	}
 
-	getTetra( t2.neighbour1, n );
-	replaceNeighbour( n, t.key, t2.key );
-	updateTetra(n);
+	if( getTetra( t2.neighbour1, n ) ) {
+		replaceNeighbour( n, t.key, t2.key );
+		updateTetra(n);
+	}
 
-	getTetra( t3.neighbour1, n );
-	replaceNeighbour( n, t.key, t3.key );
-	updateTetra(n);
+	if( getTetra( t3.neighbour1, n ) ) {
+		replaceNeighbour( n, t.key, t3.key );
+		updateTetra(n);
+	}
 
-	getTetra( t4.neighbour1, n );
-	replaceNeighbour( n, t.key, t4.key );
-	updateTetra(n);
+	if( getTetra( t4.neighbour1, n ) ) {
+		replaceNeighbour( n, t.key, t4.key );
+		updateTetra(n);
+	}
 
 	// finally delete t
 	deleteTetra(t.key);
@@ -118,21 +122,25 @@ int VoronoiShatter::getNeighborByVertices( Tetrahedron &t, MPoint a, MPoint b, M
 {
 	Tetrahedron tmp;
 
-	getTetra(t.neighbour1, tmp);
-	if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
-		return tmp.key;
+	if( getTetra(t.neighbour1, tmp) ) {
+		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+			return tmp.key;
+	}
 
-	getTetra(t.neighbour2, tmp);
-	if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
-		return tmp.key;
+	if( getTetra(t.neighbour2, tmp) ) {
+		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+			return tmp.key;
+	}
 
-	getTetra(t.neighbour3, tmp);
-	if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
-		return tmp.key;
+	if( getTetra(t.neighbour3, tmp) ) {
+		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+			return tmp.key;
+	}
 	
-	getTetra(t.neighbour4, tmp);
-	if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
-		return tmp.key;
+	if( getTetra(t.neighbour4, tmp) ) {
+		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+			return tmp.key;
+	}
 
 	return -1;
 }
