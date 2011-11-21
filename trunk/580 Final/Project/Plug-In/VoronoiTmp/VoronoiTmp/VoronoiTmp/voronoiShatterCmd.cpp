@@ -192,7 +192,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//********************************************************************************/
 		
 		// generate points
-		//*******************************************************************************************************
+		/*******************************************************************************************************
 		int numPoints = 3;
 		int numSections = 1;
 		MArgDatabase argData( syntax(), args );
@@ -211,7 +211,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		/************************************************************************************************************/
 
 		// Insert on point
-		/****************************************************
+		//****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
 		//**************************************************/
@@ -223,25 +223,26 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		TetraMapItr itr= pool.begin();
 		for(;itr!=pool.end();itr++){
 			Tetrahedron tetra = itr->second;
-			newMesh = createTetraMesh(tetra,meshFn);
-			assignShader(newMesh, meshFn,dagPath);
-			//MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
-			//MPointArray vertexArr1(tri1, 3);
+		//	newMesh = createTetraMesh(tetra,meshFn);
+		//	assignShader(newMesh, meshFn,dagPath);
+			MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
+			MPointArray vertexArr1(tri1, 3);
 
-			//MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
-			//MPointArray vertexArr2(tri2, 3);
+			MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
+			MPointArray vertexArr2(tri2, 3);
 
-			//MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
-			//MPointArray vertexArr3(tri3, 3);
+			MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
+			MPointArray vertexArr3(tri3, 3);
 
-			//MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
-			//MPointArray vertexArr4(tri4, 3);
+			MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
+			MPointArray vertexArr4(tri4, 3);
 			
-			//meshFn.addPolygon(vertexArr1);
-			//meshFn.addPolygon(vertexArr2);
-			//meshFn.addPolygon(vertexArr3);
-			//meshFn.addPolygon(vertexArr4);
+			meshFn.addPolygon(vertexArr1);
+			meshFn.addPolygon(vertexArr2);
+			meshFn.addPolygon(vertexArr3);
+			meshFn.addPolygon(vertexArr4);
 		}
+		meshFn.updateSurface();
 		MString output = MString("Num of tetra:") + pool.size();
 		//********************************************************************************/
 
