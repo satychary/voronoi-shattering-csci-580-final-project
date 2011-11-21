@@ -60,7 +60,7 @@ public:
 
 	bool findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
 	bool findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
-	MPoint* generatePoints(int total);
+	MPoint* generatePoints(int total,int section);
 	void insertOnePoint(MPoint p);     // B
 	void flip( int key, MPoint p );       
 
