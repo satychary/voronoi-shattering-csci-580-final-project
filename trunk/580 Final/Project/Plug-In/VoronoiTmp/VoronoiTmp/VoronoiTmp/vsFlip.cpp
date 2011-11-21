@@ -363,7 +363,7 @@ bool VoronoiShatter::flip32( Tetrahedron t, Tetrahedron ta, MPoint a, MPoint b, 
 
 	// test pdab first
 	if( getTetra( getNeighborByVertices( t, p, a, b ), third ) );
-	return false;
+	else return false;
 
 	if( isInTetrahedron( third, d ) ) found = 1;
 
