@@ -65,9 +65,9 @@ MPoint* VoronoiShatter::generatePoints(int total, int section){
 			arrayMP[counter].y = (y/A)*((rand()%(int)sect_length)+sect_length*(k-1))+center.y;
 			arrayMP[counter].z = (z/A)*((rand()%(int)sect_length)+sect_length*(k-1))+center.z;
 			arrayMP[counter].w = 1.0;
-			if(arrayMP[counter].x>max.x || arrayMP[counter].x<min.x ||arrayMP[counter].y>max.y || arrayMP[counter].y<min.y ||arrayMP[counter].z>max.z || arrayMP[counter].z<min.z)
-			{}
-			else
+			if(!(arrayMP[counter].x>max.x || arrayMP[counter].x<min.x ||arrayMP[counter].y>max.y || arrayMP[counter].y<min.y ||arrayMP[counter].z>max.z || arrayMP[counter].z<min.z))
+			//{}
+			//else
 			{
 				counter++;
 				i++;
