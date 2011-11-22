@@ -16,13 +16,7 @@
 VertexSet VoronoiShatter::generatePoints(int total, int section){
 
 	VertexSet setV;
-	Vertex v;
-	//bool b;
-	if(setV.find(v)!=setV.end()){
-		setV.insert(v);
-		//cnt++;
-	}
-	//int section=5;
+	Vertex temp_v;
 	MPoint* arrayMP;
 	arrayMP =(MPoint*)malloc(sizeof(MPoint)*total); 
 	MPoint min =boundingBox.min();
@@ -68,16 +62,18 @@ VertexSet VoronoiShatter::generatePoints(int total, int section){
 			double z = pow(-1.0,rand())*rand();
 			double A = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
 
-			arrayMP[counter].x = (x/A)*((rand()%(int)sect_length)+sect_length*(k-1))+center.x;
-			arrayMP[counter].y = (y/A)*((rand()%(int)sect_length)+sect_length*(k-1))+center.y;
-			arrayMP[counter].z = (z/A)*((rand()%(int)sect_length)+sect_length*(k-1))+center.z;
-			arrayMP[counter].w = 1.0;
-			if(!(arrayMP[counter].x>max.x || arrayMP[counter].x<min.x ||arrayMP[counter].y>max.y || arrayMP[counter].y<min.y ||arrayMP[counter].z>max.z || arrayMP[counter].z<min.z))
-			//{}
-			//else
+			temp_v.point.x = (x/A)*((rand()%((int)sect_length)+1)+sect_length*(k-1))+center.x;
+			temp_v.point.y = (y/A)*((rand()%((int)sect_length)+1)+sect_length*(k-1))+center.y;
+			temp_v.point.z = (z/A)*((rand()%((int)sect_length)+1)+sect_length*(k-1))+center.z;
+			temp_v.point.w = 1.0;
+			if(!(temp_v.point.x>max.x || temp_v.point.x<min.x ||temp_v.point.y>max.y || temp_v.point.y<min.y ||temp_v.point.z>max.z || temp_v.point.z<min.z))
 			{
-				counter++;
-				i++;
+				if(setV.find(temp_v)!= setV.end())
+				{
+					setV.insert(temp_v);
+					counter++;
+					i++;
+				}
 			}
 		}
 	}
