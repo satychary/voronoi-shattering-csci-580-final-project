@@ -13,8 +13,15 @@
 //	Arguments:
 //
 //	Return Value;
-MPoint* VoronoiShatter::generatePoints(int total, int section){
+VertexSet VoronoiShatter::generatePoints(int total, int section){
 
+	VertexSet setV;
+	Vertex v;
+	//bool b;
+	if(setV.find(v)!=setV.end()){
+		setV.insert(v);
+		//cnt++;
+	}
 	//int section=5;
 	MPoint* arrayMP;
 	arrayMP =(MPoint*)malloc(sizeof(MPoint)*total); 
@@ -74,5 +81,5 @@ MPoint* VoronoiShatter::generatePoints(int total, int section){
 			}
 		}
 	}
-	return arrayMP;
+	return setV;
 }
