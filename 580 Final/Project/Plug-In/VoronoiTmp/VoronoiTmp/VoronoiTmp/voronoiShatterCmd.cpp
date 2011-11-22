@@ -177,12 +177,12 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
         //*****************************************************************************/
 		
 		// create big tetra mesh
-		/******************************************************************************		
+		//******************************************************************************		
 		newMesh = createTetraMesh(tetra, meshFn);
 		//********************************************************************************/
 		
 		// assign shader
-		/********************************************************************************	
+		//********************************************************************************	
 		MObjectArray shaders, comps;
 		MFnSet setFn;
 		meshFn.setObject(dagPath);
@@ -214,36 +214,43 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
+		point.y = 1;
+		point.x = 2;
+		voronoiShatter.insertOnePoint(point);
 		//**************************************************/
 
 		// add polygon
-		/**********************************************************************************
+		//**********************************************************************************
 		meshFn.setObject(newMesh);
 		TetraMap pool = voronoiShatter.getPool();
 		TetraMapItr itr= pool.begin();
 		for(;itr!=pool.end();itr++){
 			Tetrahedron tetra = itr->second;
-		//	newMesh = createTetraMesh(tetra,meshFn);
-		//	assignShader(newMesh, meshFn,dagPath);
-			MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
-			MPointArray vertexArr1(tri1, 3);
+			newMesh = createTetraMesh(tetra,meshFn);
+			assignShader(newMesh, meshFn,dagPath);
+			//MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
+			//MPointArray vertexArr1(tri1, 3);
 
-			MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
-			MPointArray vertexArr2(tri2, 3);
+			//MPoint tri2[3]={tetra.v1.point,tetra.v2.point,tetra.v4.point};
+			//MPointArray vertexArr2(tri2, 3);
 
-			MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
-			MPointArray vertexArr3(tri3, 3);
+			//MPoint tri3[3]={tetra.v1.point,tetra.v3.point,tetra.v4.point};
+			//MPointArray vertexArr3(tri3, 3);
 
-			MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
-			MPointArray vertexArr4(tri4, 3);
+			//MPoint tri4[3]={tetra.v2.point,tetra.v3.point,tetra.v4.point};
+			//MPointArray vertexArr4(tri4, 3);
 			
-			meshFn.addPolygon(vertexArr1);
-			meshFn.addPolygon(vertexArr2);
-			meshFn.addPolygon(vertexArr3);
-			meshFn.addPolygon(vertexArr4);
+			//meshFn.addPolygon(vertexArr1);
+			//meshFn.addPolygon(vertexArr2);
+			//meshFn.addPolygon(vertexArr3);
+			//meshFn.addPolygon(vertexArr4);
 		}
-		meshFn.updateSurface();
-		MString output = MString("Num of tetra:") + pool.size();
+		//meshFn.updateSurface();
+	//	output = MString(" neighbors:") + pool.begin()->second.neighbour1+", "
+		//	+ pool.begin()->second.neighbour2 + ", "
+		//	+ pool.begin()->second.neighbour3 + ","
+		//  + pool.begin()->second.neighbour4 + " key"
+		//	+ pool.begin()->second.key;
 		//********************************************************************************/
 
 		// test ORIENT
@@ -261,7 +268,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		
 		// find point
 		/*************************************************************************************		
-		MPoint p(0,0,0,1);
+		MPoint p(-1,-0.5,0,1);
 		MString cmd = MString("spaceLocator -p ") + p.x + " " + p.y + " " + p.z + ";";
 		fDGModifier.commandToExecute(cmd);
 
