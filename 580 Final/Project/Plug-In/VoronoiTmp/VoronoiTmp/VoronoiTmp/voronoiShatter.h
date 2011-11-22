@@ -84,6 +84,7 @@ struct Tetrahedron{
 typedef std::map<int, Tetrahedron> TetraMap;                // tetrahedron map type
 typedef std::pair<int, Tetrahedron> TetraMapItem;           // tetrahedron item type
 typedef std::map<int, Tetrahedron>::iterator TetraMapItr;   // tetrahedron iterator type
+typedef std::set<Vertex>       VertexSet;
 
 class VoronoiShatter
 {
@@ -102,7 +103,7 @@ public:
 
 	bool findPoint(MPoint P, Tetrahedron &tetra);          // N, using WALK algorithm
 	bool findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra);
-	MPoint* generatePoints(int total,int section);
+	VertexSet generatePoints(int total,int section);
 	void insertOnePoint(MPoint p);     // B
 	bool flip( int key, MPoint p );       
 
