@@ -214,9 +214,13 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
+		MString cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
+		fDGModifier.commandToExecute(cmd);
 		point.y = 1;
 		point.x = 2;
 		voronoiShatter.insertOnePoint(point);
+	    cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
+		fDGModifier.commandToExecute(cmd);
 		//**************************************************/
 
 		// add polygon
