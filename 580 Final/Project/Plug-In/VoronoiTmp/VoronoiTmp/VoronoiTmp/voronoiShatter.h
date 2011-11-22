@@ -15,6 +15,7 @@
 // STL include
 #include <map>
 #include <stack>
+#include <set>
 
 #include "Globals.h"
 
