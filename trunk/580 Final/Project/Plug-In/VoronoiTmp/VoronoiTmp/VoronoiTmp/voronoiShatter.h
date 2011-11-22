@@ -21,10 +21,51 @@
 //  struct 
 struct Tetrahedron;
 
-struct Vertex{
+class Vertex
+{
+public:
+	MPoint point;
+	int incidentTetra;
+
+	Vertex(){ e = 0.00001f;}
+
+	bool operator<(const Vertex& v) const{
+		if(point.x<v.point.x)
+			return true;
+		else if(point.y<v.point.y)
+			return true;
+		else if(point.z<v.point.z)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator==(const Vertex& v) const{
+		if(abs(point.x-v.point.x)<e &&
+			abs(point.y - v.point.y)<e &&
+			abs(point.z - v.point.z)<e)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator!=(const Vertex& v) const{
+		if(abs(point.x-v.point.x)<e &&
+			abs(point.y - v.point.y)<e &&
+			abs(point.z - v.point.z)<e)
+			return false;
+		else
+			return true;
+	}
+
+private:
+	float e;  // threshold
+};
+
+/*struct Vertex{
 	MPoint point;
     int incidentTetra;        // optional, key of incident tetrahedron
-};
+};*/
 
 struct Tetrahedron{
 	Vertex v1;                // vertex
