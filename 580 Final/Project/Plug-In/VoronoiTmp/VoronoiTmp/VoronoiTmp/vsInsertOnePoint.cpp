@@ -123,22 +123,22 @@ int VoronoiShatter::getNeighborByVertices( Tetrahedron &t, MPoint a, MPoint b, M
 	Tetrahedron tmp;
 
 	if( getTetra(t.neighbour1, tmp) ) {
-		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+		if( isInTetrahedron(tmp, a) && isInTetrahedron(tmp, b) && isInTetrahedron(tmp, c) )
 			return tmp.key;
 	}
 
 	if( getTetra(t.neighbour2, tmp) ) {
-		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+		if( isInTetrahedron(tmp, a) && isInTetrahedron(tmp, b) && isInTetrahedron(tmp, c) )
 			return tmp.key;
 	}
 
 	if( getTetra(t.neighbour3, tmp) ) {
-		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+		if( isInTetrahedron(tmp, a) && isInTetrahedron(tmp, b) && isInTetrahedron(tmp, c) )
 			return tmp.key;
 	}
 	
 	if( getTetra(t.neighbour4, tmp) ) {
-		if( isInTetrahedron(tmp, a) || isInTetrahedron(tmp, b) || isInTetrahedron(tmp, c) )
+		if( isInTetrahedron(tmp, a) && isInTetrahedron(tmp, b) && isInTetrahedron(tmp, c) )
 			return tmp.key;
 	}
 
