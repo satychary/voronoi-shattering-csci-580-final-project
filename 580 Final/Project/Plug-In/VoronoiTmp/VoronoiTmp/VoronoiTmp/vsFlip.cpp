@@ -49,7 +49,7 @@ bool VoronoiShatter::flip( int key, MPoint p ){
 	//Tetrahedron ta;
 
 	// get neighbour that share abc
-	switch( getNeighborByVertices( t, a.point, b.point, c.point ) )
+	/*switch( getNeighborByVertices( t, a.point, b.point, c.point ) )
 	{
 	case 1:
 		if( getTetra( t.neighbour1, ta ) );
@@ -70,7 +70,16 @@ bool VoronoiShatter::flip( int key, MPoint p ){
 	case -1:
 		//no such neightbour, return
 		return false;
-	}
+	}*/
+	int nKey = getNeighborByVertices( t, a.point, b.point, c.point );
+	
+	//return false;
+
+	if( nKey == -1)
+		return false;
+
+	if( !getTetra( nKey, t ) )
+			return false;
 
 	// determine d
 	switch( getd( ta, a.point, b.point, c.point ) )
