@@ -20,7 +20,7 @@
 #include "Globals.h"
 
 //  struct 
-struct Tetrahedron;
+//struct Tetrahedron;
 
 class Vertex
 {
@@ -68,7 +68,9 @@ private:
     int incidentTetra;        // optional, key of incident tetrahedron
 };*/
 
-struct Tetrahedron{
+class Tetrahedron
+{
+public:
 	Vertex v1;                // vertex
 	Vertex v2;
 	Vertex v3;
@@ -78,6 +80,15 @@ struct Tetrahedron{
 	int neighbour3;
 	int neighbour4;
 	int key;                  // interger for map retrieving
+
+	Tetrahedron()
+	{
+		neighbour1 = -1;
+		neighbour2 = -1;
+		neighbour3 = -1;
+		neighbour4 = -1;
+		key = -1;
+	}
 };
 
 // type define
