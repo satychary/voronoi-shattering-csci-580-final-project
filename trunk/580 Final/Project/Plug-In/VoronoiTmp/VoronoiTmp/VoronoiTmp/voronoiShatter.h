@@ -30,6 +30,7 @@
 //
 #include <map>
 #include <stack>
+#include <vector>
 #include <set>
 
 #include "Globals.h"
@@ -122,6 +123,17 @@ public:
 		neighbour4 = -1;
 		key = -1;
 	}
+};
+
+struct Edge{
+	int startVertexId;
+	int endVertexId;
+};
+
+struct inStackEdge{
+	Vertex startVertex;
+	Vertex endVertex;
+	int key;
 };
 
 // type define
@@ -217,6 +229,21 @@ private:
 	MBoundingBox boundingBox;  // bounding box of the mesh 
 	MMatrix      tMatrix;      // transform matrix
 	MDagPath      vMesh;        // mesh to play with
+
+	//DT to VD
+	std::vector<Vertex> VDvertex;
+	std::vector<Edge> VDedge;
+	std::vector<int> VDface;
+	std::vector<int> VDfaceIndex;
+	std::vector<int> VDpoly;
+	std::vector<int> VDpolyIndex;
+
+	std::set<Vertex> vertexSet;
+	std::set<Vertex>::iterator checkVertex;
+	std::stack<inStackEdge> edgeStk;
+
+	bool checkEdge( Tetrahedron t, inStackEdge );
+	Vertex findSphereCenter( Tetrahedron t );
 };
 
 #endif
