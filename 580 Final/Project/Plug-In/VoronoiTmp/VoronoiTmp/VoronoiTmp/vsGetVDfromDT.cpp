@@ -23,7 +23,7 @@ void VoronoiShatter::getVDFormDT(){
 	//VD's edge:  2 VD's vertex with the same DT's face
 	//VD's face:  tetra which share DT's edge
 	//VD's poly:  share DT's vertex
-
+	
 	Tetrahedron t;
 	VoronoiShatter voronoiShatter;
 	TetraMap pool = voronoiShatter.getPool();
@@ -33,11 +33,15 @@ void VoronoiShatter::getVDFormDT(){
 		// get tetrahedront
 		t = itr->second;
 	
-		// put all verteces to set
-		vertexSet.insert(t.v1);
-		vertexSet.insert(t.v2);
-		vertexSet.insert(t.v3);
-		vertexSet.insert(t.v4);
+		// put all verteces to set, not include big tetra's vertecies
+		if( t.v1 != bigTetra .v1 && t.v1 != bigTetra .v2 && t.v1 !=bigTetra .v3 && t.v1 != bigTetra .v4)
+			vertexSet.insert(t.v1);
+		if( t.v2 != bigTetra .v1 && t.v2 != bigTetra .v2 && t.v2 !=bigTetra .v3 && t.v2 != bigTetra .v4)
+			vertexSet.insert(t.v2);
+		if( t.v3 != bigTetra .v1 && t.v3 != bigTetra .v2 && t.v3 !=bigTetra .v3 && t.v3 != bigTetra .v4)
+			vertexSet.insert(t.v3);
+		if( t.v4 != bigTetra .v1 && t.v4 != bigTetra .v2 && t.v4 !=bigTetra .v3 && t.v4 != bigTetra .v4)
+			vertexSet.insert(t.v4);
 	}
 
 
