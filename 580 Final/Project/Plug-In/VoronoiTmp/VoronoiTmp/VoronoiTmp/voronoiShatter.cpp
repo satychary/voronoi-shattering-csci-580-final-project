@@ -157,3 +157,13 @@ void VoronoiShatter::setTransformMatrix(MMatrix mx)
 {
 	tMatrix = mx;
 }
+
+//	Description:
+//		set mesh
+//	Arguments:
+//		mesh -- mesh to be set
+//	Return Value;
+void VoronoiShatter::setMesh(MDagPath mesh)
+{
+	vMesh = mesh;
+}
