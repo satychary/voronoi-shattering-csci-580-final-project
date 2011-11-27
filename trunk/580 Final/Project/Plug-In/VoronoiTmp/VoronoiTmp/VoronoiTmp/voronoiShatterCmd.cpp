@@ -21,6 +21,7 @@
 //
 #include <maya/MItSelectionList.h>
 #include <maya/MItMeshPolygon.h>
+#include <maya/MItMeshEdge.h>
 
 // General Includes
 //
@@ -29,6 +30,7 @@
 #include <maya/MPlug.h>
 #include <maya/MBoundingBox.h>
 #include <maya/MMatrix.h>
+#include <maya/MFloatPointArray.h>
 #include <maya/MPointArray.h>
 #include <maya/MIntArray.h>
 #include <maya/MSyntax.h>
@@ -137,6 +139,9 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 
 	for( ; !selListIter.isDone(); selListIter.next() ){
 		selListIter.getDagPath(dagPath);
+		// set mesh
+		//voronoiShatter.setMesh(dagPath);
+		meshFn.setObject(dagPath);
 		nodeFn.setObject(dagPath);
 		bbx = nodeFn.boundingBox();
 
@@ -177,12 +182,12 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
         //*****************************************************************************/
 		
 		// create big tetra mesh
-		//******************************************************************************		
+		/******************************************************************************		
 		newMesh = createTetraMesh(tetra, meshFn);
 		//********************************************************************************/
 		
 		// assign shader
-		//********************************************************************************	
+		/********************************************************************************	
 		MObjectArray shaders, comps;
 		MFnSet setFn;
 		meshFn.setObject(dagPath);
@@ -211,7 +216,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		/************************************************************************************************************/
 
 		// Insert on point
-		//****************************************************
+		/****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
 		MString cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
@@ -224,7 +229,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//**************************************************/
 
 		// add polygon
-		//**********************************************************************************
+		/**********************************************************************************
 		meshFn.setObject(newMesh);
 		TetraMap pool = voronoiShatter.getPool();
 		TetraMapItr itr= pool.begin();
@@ -284,6 +289,86 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			output = MString("Not Found!");
 		//************************************************************************************/
 
+
+		// test fnMeshEdge
+		/*MItMeshEdge edgeIt(dagPath);
+		for(;!edgeIt.isDone();edgeIt.next()){
+			output += MString("id: ") + edgeIt.index();
+		}
+		for(int i=0; i<4;edgeIt.next()){
+			MPoint p = edgeIt.point(1,MSpace::kWorld);
+			p.x = 0;
+			edgeIt.setPoint(p,1,MSpace::kWorld);
+
+			i++;
+		}
+		Vertex v1,v2,v3;
+
+		v1.point.x = 0;
+		v1.point.y = 0;
+		v1.point.z = 1;
+
+		v2.point.x = 0;
+		v2.point.y = 1;
+		v2.point.z = 0;
+
+		v3.point.x = 0;
+		v3.point.y = 0;
+		v3.point.z = -1;
+
+		int orient;
+		MPoint p = edgeIt.point(0, MSpace::kWorld);
+		orient = voronoiShatter.orient(v1,v2,v3,p);
+		if(orient<0){
+			output += MString("point 0: under!");
+		}
+		else{
+			output += MString("point 0: above!");
+		}
+		//output += MString("Position 0: ")+p.x+" " + p.y +" "+p.z;
+		p = edgeIt.point(1, MSpace::kWorld);
+		orient = voronoiShatter.orient(v1,v2,v3,p);
+		if(orient<0){
+			output += MString("point 1: under!");
+		}
+		else{
+			output += MString("point 1: above!");
+		}
+		//output += MString("Position 1: ")+p.x+" " + p.y +" "+p.z;
+		//p.x = 0;
+		//edgeIt.setPoint(p,1,MSpace::kWorld);
+		//meshFn.deleteEdge(0, &fDGModifier);
+		//meshFn.deleteEdge(2, &fDGModifier);
+
+		int place[5] = {MFnMesh::kOnEdge, MFnMesh::kOnEdge,MFnMesh::kOnEdge, MFnMesh::kOnEdge, MFnMesh::kOnEdge};
+		MIntArray placements(place,5);
+
+		int list[5] = {0,1,2,3,0};
+		MIntArray edgeList(list,5);
+		
+		float factor[5] = {.5,.5,.5,.5,.5};
+		MFloatArray edgeFactors(factor,5);
+
+		MFloatPointArray internalpoints;
+
+		meshFn.split(placements,edgeList,edgeFactors,internalpoints);
+		*/
+
+		Plane plane;
+		plane.pa.x = 1;
+		plane.pa.y = -3;
+		plane.pb.z = 3;
+
+		plane.pb.x = 0;
+		plane.pb.y = 3;
+		plane.pb.z = 0;
+
+		plane.pc.x = -1;
+		plane.pc.y = -3;
+		plane.pc.z = -3;
+
+		voronoiShatter.splitMesh(dagPath,plane);
+		meshFn.updateSurface();
 		fDGModifier.doIt();
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
