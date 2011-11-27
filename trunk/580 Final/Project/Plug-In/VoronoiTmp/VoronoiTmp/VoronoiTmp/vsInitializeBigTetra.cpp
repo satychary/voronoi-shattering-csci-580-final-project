@@ -66,6 +66,9 @@ Tetrahedron VoronoiShatter::initializeBigTetra(){
 	tetra.neighbour3 = -1;
 	tetra.neighbour4 = -1;
 	
+	// set bigTetra
+	bigTetra = tetra;
+
 	// add to pool
 	addTetra(tetra);
 
