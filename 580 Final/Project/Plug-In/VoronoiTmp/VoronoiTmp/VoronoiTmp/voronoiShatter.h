@@ -8,21 +8,52 @@
 #define _voronoiShatter
 
 // Maya include
+
+// Function Sets
+//
+#include <maya/MFnMesh.h>
+
+// Iterators
+//
+#include <maya/MItMeshPolygon.h>
+#include <maya/MItMeshEdge.h>
+
+// General
+//
+#include <maya/MGlobal.h>
 #include <maya/MPoint.h>
 #include <maya/MBoundingBox.h>
 #include <maya/MMatrix.h>
+#include <maya/MDagPath.h>
 
 // STL include
+//
 #include <map>
 #include <stack>
-#include <vector>
 #include <set>
-
 
 #include "Globals.h"
 
 //  struct 
-//struct Tetrahedron;
+struct Vector
+{
+	double x;
+	double y;
+	double z;
+};
+
+struct Line
+{
+	MPoint la;
+	MPoint lb;
+};
+
+struct Plane
+{
+	MPoint pa;
+	MPoint pb;
+	MPoint pc;
+};
 
 class Vertex
 {
@@ -93,24 +124,11 @@ public:
 	}
 };
 
-struct Edge{
-	int startVertexId;
-	int endVertexId;
-};
-
-struct inStackEdge{
-	Vertex startVertex;
-	Vertex endVertex;
-	int key;
-};
-
 // type define
 typedef std::map<int, Tetrahedron> TetraMap;                // tetrahedron map type
 typedef std::pair<int, Tetrahedron> TetraMapItem;           // tetrahedron item type
 typedef std::map<int, Tetrahedron>::iterator TetraMapItr;   // tetrahedron iterator type
 typedef std::set<Vertex>       VertexSet;
-
-
 
 class VoronoiShatter
 {
@@ -134,6 +152,10 @@ public:
 	bool flip( int key, MPoint p );       
 
 	void getVDFormDT();        // CZ
+
+	// mesh functions
+	void setMesh(MDagPath mesh);
+	void splitMesh(MDagPath &dagPath, Plane plane); // split a mesh using a plane
 
 	// Mian action
 	void perform();
@@ -170,6 +192,9 @@ private:
 	bool popTetra(int key,Tetrahedron &tetra);           /* get tetrahedron into tetra AND delete it form our pool by key,
 															return flase if:
 											                key not exist */
+	// assistant funs for splitMesh
+	MPoint getLinePlaneIntersection(Line line, Plane plane);
+	Vector crossProduct(Vector v1, Vector v2);
 
 	//assistant functions in addPoint
 	int getNeighborByVertices( Tetrahedron &t, MPoint a, MPoint b, MPoint c );
@@ -191,21 +216,7 @@ private:
 	int currentKey;            // curent key value for new tehrahedron created
 	MBoundingBox boundingBox;  // bounding box of the mesh 
 	MMatrix      tMatrix;      // transform matrix
-
-	//DT to VD
-	std::vector<Vertex> VDvertex;
-	std::vector<Edge> VDedge;
-	std::vector<int> VDface;
-	std::vector<int> VDfaceIndex;
-	std::vector<int> VDpoly;
-	std::vector<int> VDpolyIndex;
-
-	std::set<Vertex> vertexSet;
-	std::set<Vertex>::iterator checkVertex;
-	std::stack<inStackEdge> edgeStk;
-
-	bool checkEdge( Tetrahedron t, inStackEdge );
-	Vertex findSphereCenter( Tetrahedron t );
+	MDagPath      vMesh;        // mesh to play with
 };
 
 #endif
