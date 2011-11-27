@@ -65,12 +65,18 @@ public:
 	Vertex(){ e = 0.00001f;}
 
 	bool operator<(const Vertex& v) const{
-		if(point.x<v.point.x)
+		if(this->point.x<v.point.x)
 			return true;
-		else if(point.y<v.point.y)
+		if(abs(point.x-v.point.x)<e && 
+			this->point.y < v.point.y)
 			return true;
-		else if(point.z<v.point.z)
+		if(abs(point.y-v.point.y)<e && 
+			this->point.z < v.point.z)
 			return true;
+	/*	else if(this->point.y<v.point.y)
+			return true;
+		else if(this->point.z<v.point.z)
+			return true;*/
 		else
 			return false;
 	}
@@ -183,6 +189,18 @@ public:
 
     TetraMap getPool();
 
+		//DT to VD
+	std::vector<Vertex> VDvertex;
+	std::vector<Edge> VDedge;
+	std::vector<int> VDface;
+	std::vector<int> VDfaceIndex;
+	std::vector<int> VDpoly;
+	std::vector<int> VDpolyIndex;
+
+	std::set<Vertex> vertexSet;
+	std::set<Vertex>::iterator checkVertex;
+	std::stack<inStackEdge> edgeStk;
+
 private:
 
 	// Private method
@@ -222,6 +240,8 @@ private:
 	// Private member variable
 	std::stack<int> flipStack;
 
+	Tetrahedron bigTetra;       // big tetra
+
 	TetraMap tetraPool;         /* our pool where we put all tetrahedrons avaliable now, 
 	                               each associated with an unique interger key value */
 
@@ -229,18 +249,6 @@ private:
 	MBoundingBox boundingBox;  // bounding box of the mesh 
 	MMatrix      tMatrix;      // transform matrix
 	MDagPath      vMesh;        // mesh to play with
-
-	//DT to VD
-	std::vector<Vertex> VDvertex;
-	std::vector<Edge> VDedge;
-	std::vector<int> VDface;
-	std::vector<int> VDfaceIndex;
-	std::vector<int> VDpoly;
-	std::vector<int> VDpolyIndex;
-
-	std::set<Vertex> vertexSet;
-	std::set<Vertex>::iterator checkVertex;
-	std::stack<inStackEdge> edgeStk;
 
 	bool checkEdge( Tetrahedron t, inStackEdge );
 	Vertex findSphereCenter( Tetrahedron t );
