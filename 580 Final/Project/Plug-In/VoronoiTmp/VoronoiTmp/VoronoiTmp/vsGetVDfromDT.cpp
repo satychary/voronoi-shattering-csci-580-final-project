@@ -43,7 +43,6 @@ void VoronoiShatter::getVDFormDT(){
 
 	Tetrahedron originalTetra;
 
-	itr = pool.begin();
 
 	while( !vertexSet.empty() )
 	{
@@ -223,7 +222,7 @@ void VoronoiShatter::getVDFormDT(){
 			// this is a VDface
 			for(int i=vdEdgeTag; i<VDedge.size(); i++)
 			{
-				VDface.push_back( vdEdgeTag );
+				VDface.push_back( i );
 			}
 
 			vdEdgeTag = VDedge.size();
@@ -235,12 +234,15 @@ void VoronoiShatter::getVDFormDT(){
 		//this is a VDpoly
 		for(int i=vdFaceTag; i<VDface.size(); i++)
 		{
-			VDpoly.push_back( vdFaceTag );
+			VDpoly.push_back( i );
 		}
 
 		vdFaceTag = VDface.size();
 		VDpolyIndex.push_back( vdFaceTag );
 		//end if VDpoly
+
+		// erase the vertex
+		vertexSet.erase( checkVertex );
 
 	}//end while of vertex stk
 	return;
