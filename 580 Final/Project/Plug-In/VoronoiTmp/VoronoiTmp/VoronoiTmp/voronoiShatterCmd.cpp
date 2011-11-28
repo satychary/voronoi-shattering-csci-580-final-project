@@ -161,6 +161,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		Tetrahedron tetra = voronoiShatter.initializeBigTetra();
 
 		MString output;
+		output = MString("Hello ") + tetra.key;
 	//	output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
 	//	output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
 		
@@ -182,7 +183,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
         //*****************************************************************************/
 		
 		// create big tetra mesh
-		/******************************************************************************		
+		//******************************************************************************		
 		newMesh = createTetraMesh(tetra, meshFn);
 		//********************************************************************************/
 		
@@ -216,21 +217,21 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		/************************************************************************************************************/
 
 		// Insert on point
-		/****************************************************
+		//****************************************************
 		MPoint point(0,0,0,1);
 		voronoiShatter.insertOnePoint(point);
 		MString cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
 		fDGModifier.commandToExecute(cmd);
 		point.y = 1;
 		point.x = 2;
-		voronoiShatter.insertOnePoint(point);
-	    cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
-		fDGModifier.commandToExecute(cmd);
+		//voronoiShatter.insertOnePoint(point);
+	    //cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
+	//	fDGModifier.commandToExecute(cmd);
 		//**************************************************/
 
 		// add polygon
-		/**********************************************************************************
-		meshFn.setObject(newMesh);
+		//**********************************************************************************
+		//meshFn.setObject(newMesh);
 		TetraMap pool = voronoiShatter.getPool();
 		TetraMapItr itr= pool.begin();
 		for(;itr!=pool.end();itr++){
@@ -255,11 +256,15 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			//meshFn.addPolygon(vertexArr4);
 		}
 		//meshFn.updateSurface();
-	//	output = MString(" neighbors:") + pool.begin()->second.neighbour1+", "
-		//	+ pool.begin()->second.neighbour2 + ", "
-		//	+ pool.begin()->second.neighbour3 + ","
-		//  + pool.begin()->second.neighbour4 + " key"
-		//	+ pool.begin()->second.key;
+	    itr= pool.begin();
+		itr ++;
+		itr ++;
+		itr ++;
+		output = MString(" neighbors:") + itr->second.neighbour1+", "
+			+ itr->second.neighbour2 + ", "
+			+ itr->second.neighbour3 + ","
+		  + itr->second.neighbour4 + " key"
+			+ itr->second.key;
 		//********************************************************************************/
 
 		// test ORIENT
@@ -291,7 +296,8 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 
 
 		// test fnMeshEdge
-		/*MItMeshEdge edgeIt(dagPath);
+		/************************************************************************************
+		MItMeshEdge edgeIt(dagPath);
 		for(;!edgeIt.isDone();edgeIt.next()){
 			output += MString("id: ") + edgeIt.index();
 		}
@@ -352,8 +358,20 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		MFloatPointArray internalpoints;
 
 		meshFn.split(placements,edgeList,edgeFactors,internalpoints);
-		*/
+		//*******************************************************************************************************/
 
+		// test DT -> VD
+        /****************************************************************************************************
+		voronoiShatter.getVDFormDT();
+		
+		output = MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
+		output += MString("Edge num: ")+ voronoiShatter.VDedge.size();
+		output += MString("Face num: ")+ voronoiShatter.VDfaceIndex.size();
+		output += MString(" Polygon num: ")+ voronoiShatter.VDpolyIndex.size(); 
+		//****************************************************************************************************/
+
+		// test split mesh
+		/******************************************************************************
 		Plane plane;
 		plane.pa.x = 1;
 		plane.pa.y = -3;
@@ -368,7 +386,8 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		plane.pc.z = -3;
 
 		voronoiShatter.splitMesh(dagPath,plane);
-		meshFn.updateSurface();
+		//******************************************************************************/
+		//meshFn.updateSurface();
 		fDGModifier.doIt();
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
@@ -477,7 +496,7 @@ MStatus VoronoiShatterCmd::directModifier( MObject mesh ){
 //      meshFn -- MFnMesh
 //	Return Value:
 //		the result mesh
-MObject VoronoiShatterCmd::createTetraMesh(Tetrahedron tetra, MFnMesh meshFn)
+MObject VoronoiShatterCmd::createTetraMesh(Tetrahedron tetra, MFnMesh &meshFn)
 {
 	MObject newMesh;
 	
