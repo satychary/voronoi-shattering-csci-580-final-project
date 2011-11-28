@@ -247,7 +247,7 @@ void VoronoiShatter::getVDFormDT(){
 					edgeSet.insert(e3);
 				}
 
-
+				
 
 
 				// find VD's vertex vp of currentTetra
@@ -294,17 +294,17 @@ void VoronoiShatter::getVDFormDT(){
 				}
 				else if ( checkEdge(t2, currentEdge) == true 
 					&& t2.key != previousTetraKey
-					&& t2.key == firstTetraKey){
+					&& t2.key != firstTetraKey){
 					currentKey = t2.key;
 				}
 				else if ( checkEdge(t3, currentEdge) == true 
 					&& t3.key != previousTetraKey 
-					&& t3.key == firstTetraKey){
+					&& t3.key != firstTetraKey){
 					currentKey = t3.key;
 				}
 				else if ( checkEdge(t4, currentEdge) == true 
 					&& t4.key != previousTetraKey 
-					&& t4.key == firstTetraKey){
+					&& t4.key != firstTetraKey){
 					currentKey = t4.key;
 				}
 				else{
