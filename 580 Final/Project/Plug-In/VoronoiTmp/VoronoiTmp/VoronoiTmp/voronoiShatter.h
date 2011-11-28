@@ -169,7 +169,7 @@ struct Edge{
 	int endVertexId;
 };
 */
-struct inStackEdge{
+struct inSetEdge{
 	Vertex startVertex;
 	Vertex endVertex;
 	int key;
@@ -232,7 +232,8 @@ public:
 
 	std::set<Vertex> vertexSet;
 	std::set<Vertex>::iterator checkVertex;
-	std::stack<inStackEdge> edgeStk;
+	std::set<inSetEdge> edgeSet;
+	std::set<inSetEdge>::iterator currentEdge;
 
 private:
 
@@ -283,7 +284,7 @@ private:
 	MMatrix      tMatrix;      // transform matrix
 	MDagPath      vMesh;        // mesh to play with
 
-	bool checkEdge( Tetrahedron t, inStackEdge );
+	bool checkEdge( Tetrahedron t, std::set<inSetEdge>::iterator inSetEdge );
 	Vertex findSphereCenter( Tetrahedron t );
 };
 
