@@ -25,8 +25,9 @@ void VoronoiShatter::getVDFormDT(){
 	//VD's poly:  share DT's vertex
 	
 	Tetrahedron t;
-	VoronoiShatter voronoiShatter;
-	TetraMap pool = voronoiShatter.getPool();
+	//VoronoiShatter voronoiShatter;
+	//TetraMap pool = voronoiShatter.getPool();
+	TetraMap pool = tetraPool;
 	TetraMapItr itr = pool.begin();
 
 	for( ; itr!=pool.end(); itr++){
@@ -165,7 +166,8 @@ void VoronoiShatter::getVDFormDT(){
 		
 				// get current tetra
 				if( getTetra( currentKey, currentTetra)  ==false){
-					continue;
+					//continue;
+					break;
 				}
 
 
@@ -204,17 +206,32 @@ void VoronoiShatter::getVDFormDT(){
 				if( getTetra(currentTetra.neighbour4, t4) == false )
 					std::cerr<<"no neighbor4"<<std::endl;
 
+				if(t1.key == firstTetraKey || 
+					t2.key == firstTetraKey|| 
+					t3.key == firstTetraKey|| 
+					t4.key == firstTetraKey){
+						break;
+				}
+
 				// if tetra contains edge, and it is not the first tetra
-				if ( checkEdge(t1, currentEdge) == true && t1.key != previousTetraKey ){
+				if ( checkEdge(t1, currentEdge) == true 
+					&& t1.key != previousTetraKey 
+					&& t1.key != firstTetraKey){
 					currentKey = t1.key;
 				}
-				else if ( checkEdge(t2, currentEdge) == true && t2.key != previousTetraKey ){
+				else if ( checkEdge(t2, currentEdge) == true 
+					&& t2.key != previousTetraKey
+					&& t2.key == firstTetraKey){
 					currentKey = t2.key;
 				}
-				else if ( checkEdge(t3, currentEdge) == true && t3.key != previousTetraKey ){
+				else if ( checkEdge(t3, currentEdge) == true 
+					&& t3.key != previousTetraKey 
+					&& t3.key == firstTetraKey){
 					currentKey = t3.key;
 				}
-				else if ( checkEdge(t4, currentEdge) == true && t4.key != previousTetraKey ){
+				else if ( checkEdge(t4, currentEdge) == true 
+					&& t4.key != previousTetraKey 
+					&& t4.key == firstTetraKey){
 					currentKey = t4.key;
 				}
 				else{
@@ -222,7 +239,7 @@ void VoronoiShatter::getVDFormDT(){
 				}
 
 			}// end while of find neighbor
-
+			
 			// this is a VDface
 			for(int i=vdEdgeTag; i<VDedge.size(); i++)
 			{
@@ -234,7 +251,7 @@ void VoronoiShatter::getVDFormDT(){
 			// end of VDface
 
 		}//end while edge stk
-
+		
 		//this is a VDpoly
 		for(int i=vdFaceTag; i<VDface.size(); i++)
 		{
@@ -249,6 +266,7 @@ void VoronoiShatter::getVDFormDT(){
 		vertexSet.erase( checkVertex );
 
 	}//end while of vertex stk
+	
 	return;
 }
 
