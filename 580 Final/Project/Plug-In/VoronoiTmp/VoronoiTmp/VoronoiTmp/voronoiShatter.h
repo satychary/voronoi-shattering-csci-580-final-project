@@ -91,12 +91,12 @@ public:
 	}
 
 	bool operator!=(const Vertex& v) const{
-		if(abs(point.x-v.point.x)<e &&
-			abs(point.y - v.point.y)<e &&
-			abs(point.z - v.point.z)<e)
-			return false;
-		else
+		if(abs(point.x-v.point.x)>e ||
+			abs(point.y - v.point.y)>e ||
+			abs(point.z - v.point.z)>e)
 			return true;
+		else
+			return false;
 	}
 
 private:
@@ -128,6 +128,38 @@ public:
 		neighbour3 = -1;
 		neighbour4 = -1;
 		key = -1;
+	}
+};
+
+class Edge{
+public:
+	int startVertexId;
+	int endVertexId;
+
+	bool operator<(const Edge& edge) const{
+		if(this->startVertexId<edge.startVertexId)
+			return true;
+		if(this->startVertexId == edge.startVertexId
+			&& this->endVertexId<edge.endVertexId)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator==(const Edge& edge) const{
+		if((this->startVertexId == edge.startVertexId && this->endVertexId == edge.endVertexId)
+		   ||(this->startVertexId == edge.endVertexId && this->endVertexId == edge.startVertexId))
+			return true;
+		else
+			return false;
+	}
+
+	bool operator!=(const Edge& edge) const{
+		if(this->startVertexId != edge.startVertexId
+			&& this->startVertexId != edge.endVertexId)
+			return true;
+		else
+			return false;
 	}
 };
 
