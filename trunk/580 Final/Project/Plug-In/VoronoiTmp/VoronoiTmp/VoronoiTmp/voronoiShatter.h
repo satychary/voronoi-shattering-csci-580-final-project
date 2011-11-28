@@ -169,11 +169,46 @@ struct Edge{
 	int endVertexId;
 };
 */
-struct inSetEdge{
+
+class inSetEdge
+{
+public:
 	Vertex startVertex;
 	Vertex endVertex;
 	int key;
+
+	bool operator<(const inSetEdge& edge) const{
+		if(this->startVertex<edge.startVertex)
+			return true;
+		if(this->startVertex == edge.startVertex
+			&& this->endVertex<edge.endVertex)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator==(const inSetEdge& edge) const{
+		if((this->startVertex == edge.startVertex && this->endVertex == edge.endVertex)
+		   ||(this->startVertex == edge.endVertex && this->endVertex == edge.startVertex))
+			return true;
+		else
+			return false;
+	}
+
+	bool operator!=(const inSetEdge& edge) const{
+		if(this->startVertex != edge.startVertex
+			&& this->startVertex != edge.endVertex)
+			return true;
+		else
+			return false;
+	}
 };
+
+/*struct inSetEdge{
+	Vertex startVertex;
+	Vertex endVertex;
+	int key;
+};*/
 
 // type define
 typedef std::map<int, Tetrahedron> TetraMap;                // tetrahedron map type
