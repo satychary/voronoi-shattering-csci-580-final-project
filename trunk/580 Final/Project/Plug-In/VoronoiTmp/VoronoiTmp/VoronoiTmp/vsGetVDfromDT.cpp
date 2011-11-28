@@ -62,9 +62,9 @@ void VoronoiShatter::getVDFormDT(){
 		}
 			
 		// tetra contains p
-		inStackEdge e1;
-		inStackEdge e2;
-		inStackEdge e3;
+		inSetEdge e1;
+		inSetEdge e2;
+		inSetEdge e3;
 
 		// push the edge to stack
 		if(*checkVertex == originalTetra.v1){
@@ -80,9 +80,9 @@ void VoronoiShatter::getVDFormDT(){
 			e3.endVertex = originalTetra.v4;
 			e3.key = originalTetra.key;
 
-			edgeStk.push(e1);
-			edgeStk.push(e2);
-			edgeStk.push(e3);
+			edgeSet.insert(e1);
+			edgeSet.insert(e2);
+			edgeSet.insert(e3);
 		}
 		else if(*checkVertex == originalTetra.v2){
 			e1.startVertex = originalTetra.v2;
@@ -97,9 +97,9 @@ void VoronoiShatter::getVDFormDT(){
 			e3.endVertex = originalTetra.v4;
 			e3.key = originalTetra.key;
 
-			edgeStk.push(e1);
-			edgeStk.push(e2);
-			edgeStk.push(e3);
+			edgeSet.insert(e1);
+			edgeSet.insert(e2);
+			edgeSet.insert(e3);
 		}
 		else if(*checkVertex == originalTetra.v3){
 			e1.startVertex = originalTetra.v3;
@@ -114,9 +114,9 @@ void VoronoiShatter::getVDFormDT(){
 			e3.endVertex = originalTetra.v4;
 			e3.key = originalTetra.key;
 
-			edgeStk.push(e1);
-			edgeStk.push(e2);
-			edgeStk.push(e3);
+			edgeSet.insert(e1);
+			edgeSet.insert(e2);
+			edgeSet.insert(e3);
 		}
 		else if(*checkVertex == originalTetra.v4){
 			e1.startVertex = originalTetra.v4;
@@ -131,9 +131,9 @@ void VoronoiShatter::getVDFormDT(){
 			e3.endVertex = originalTetra.v3;
 			e3.key = originalTetra.key;
 
-			edgeStk.push(e1);
-			edgeStk.push(e2);
-			edgeStk.push(e3);
+			edgeSet.insert(e1);
+			edgeSet.insert(e2);
+			edgeSet.insert(e3);
 		}
 
 
@@ -142,7 +142,11 @@ void VoronoiShatter::getVDFormDT(){
 		VDfaceIndex.push_back(0);
 		VDpolyIndex.push_back(0);
 
-		while( !edgeStk.empty() )
+		// choose first edge
+		currentEdge = edgeSet.begin();
+
+		//while( !edgeSet.empty() )
+		for( ; currentEdge!=edgeSet.end(); currentEdge++ )  //while haven't choosn the last edge
 		{
 
 			int previousTetraKey = 0;
@@ -153,13 +157,14 @@ void VoronoiShatter::getVDFormDT(){
 			Tetrahedron currentTetra;
 
 			// choose one edge E
-			inStackEdge currentEdge;
-			currentEdge = edgeStk.top();
+	//		inSetEdge currentEdge;
+	//		currentEdge = edgeSet.top();
+
 
 			// find the edge from which tetra
-			currentKey = currentEdge.key;
-			firstTetraKey = currentEdge.key;
-			edgeStk.pop();
+			currentKey = currentEdge->key;
+			firstTetraKey = currentEdge->key;
+	//		edgeStk.pop();
 
 			while( hasNeighbor )
 			{
@@ -169,6 +174,80 @@ void VoronoiShatter::getVDFormDT(){
 					//continue;
 					break;
 				}
+
+
+						// tetra contains p
+					// push the edge to stack
+				if(*checkVertex == currentTetra.v1){
+					e1.startVertex = currentTetra.v1;
+					e1.endVertex = currentTetra.v2;
+					e1.key =currentTetra.key;
+
+					e2.startVertex = currentTetra.v1;
+					e2.endVertex = currentTetra.v3;
+					e2.key = currentTetra.key;
+
+					e3.startVertex = currentTetra.v1;
+					e3.endVertex = currentTetra.v4;
+					e3.key = currentTetra.key;
+
+					edgeSet.insert(e1);
+					edgeSet.insert(e2);
+					edgeSet.insert(e3);
+				}
+				else if(*checkVertex == currentTetra.v2){
+					e1.startVertex = currentTetra.v2;
+					e1.endVertex = currentTetra.v1;
+					e1.key = currentTetra.key;
+
+					e2.startVertex = currentTetra.v2;
+					e2.endVertex = currentTetra.v3;
+					e2.key = currentTetra.key;
+
+					e3.startVertex = currentTetra.v2;
+					e3.endVertex = currentTetra.v4;
+					e3.key = currentTetra.key;
+
+					edgeSet.insert(e1);
+					edgeSet.insert(e2);
+					edgeSet.insert(e3);
+				}
+				else if(*checkVertex == currentTetra.v3){
+					e1.startVertex = currentTetra.v3;
+					e1.endVertex = currentTetra.v1;
+					e1.key = currentTetra.key;
+
+					e2.startVertex = currentTetra.v3;
+					e2.endVertex = currentTetra.v2;
+					e2.key = currentTetra.key;
+
+					e3.startVertex = currentTetra.v3;
+					e3.endVertex = currentTetra.v4;
+					e3.key = currentTetra.key;
+
+					edgeSet.insert(e1);
+					edgeSet.insert(e2);
+					edgeSet.insert(e3);
+				}
+				else if(*checkVertex == currentTetra.v4){
+					e1.startVertex = currentTetra.v4;
+					e1.endVertex = currentTetra.v1;
+					e1.key = currentTetra.key;
+
+					e2.startVertex = currentTetra.v4;
+					e2.endVertex = currentTetra.v2;
+					e2.key = currentTetra.key;
+
+					e3.startVertex = currentTetra.v4;
+					e3.endVertex = currentTetra.v3;
+					e3.key = currentTetra.key;
+
+					edgeSet.insert(e1);
+					edgeSet.insert(e2);
+					edgeSet.insert(e3);
+				}
+
+
 
 
 				// find VD's vertex vp of currentTetra
@@ -206,12 +285,6 @@ void VoronoiShatter::getVDFormDT(){
 				if( getTetra(currentTetra.neighbour4, t4) == false )
 					std::cerr<<"no neighbor4"<<std::endl;
 
-				if(t1.key == firstTetraKey || 
-					t2.key == firstTetraKey|| 
-					t3.key == firstTetraKey|| 
-					t4.key == firstTetraKey){
-						break;
-				}
 
 				// if tetra contains edge, and it is not the first tetra
 				if ( checkEdge(t1, currentEdge) == true 
@@ -272,7 +345,7 @@ void VoronoiShatter::getVDFormDT(){
 
 
 
-bool VoronoiShatter::checkEdge(Tetrahedron t, inStackEdge e)
+bool VoronoiShatter::checkEdge(Tetrahedron t, std::set<inSetEdge>::iterator e)
 {
 	Vertex p1, p2, p3, p4;
 	p1 = t.v1;
@@ -280,24 +353,24 @@ bool VoronoiShatter::checkEdge(Tetrahedron t, inStackEdge e)
 	p3 = t.v3;
 	p4 = t.v4;
 
-	if( e.startVertex == p1 )
+	if( e->startVertex == p1 )
 	{
-		if( e.endVertex == p2 || e.endVertex ==p3 || e.endVertex ==p4 )
+		if( e->endVertex == p2 || e->endVertex ==p3 || e->endVertex ==p4 )
 			return true;
 	}
-	else if( e.startVertex == p2 )
+	else if( e->startVertex == p2 )
 	{
-		if( e.endVertex == p1 || e.endVertex ==p3 || e.endVertex ==p4 )
+		if( e->endVertex == p1 || e->endVertex ==p3 || e->endVertex ==p4 )
 			return true;
 	}
-	else if( e.startVertex == p3 )
+	else if( e->startVertex == p3 )
 	{
-		if( e.endVertex == p1 || e.endVertex ==p2 || e.endVertex ==p4 )
+		if( e->endVertex == p1 || e->endVertex ==p2 || e->endVertex ==p4 )
 			return true;
 	}
-	else if(e.startVertex == p4)
+	else if(e->startVertex == p4)
 	{
-		if( e.endVertex == p1 || e.endVertex ==p2 || e.endVertex ==p3 )
+		if( e->endVertex == p1 || e->endVertex ==p2 || e->endVertex ==p3 )
 			return true;
 	}
 	else
