@@ -163,11 +163,12 @@ public:
 	}
 };
 
+/*
 struct Edge{
 	int startVertexId;
 	int endVertexId;
 };
-
+*/
 struct inStackEdge{
 	Vertex startVertex;
 	Vertex endVertex;
