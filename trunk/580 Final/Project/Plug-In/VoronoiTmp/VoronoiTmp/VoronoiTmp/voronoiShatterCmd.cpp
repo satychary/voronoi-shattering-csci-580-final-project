@@ -361,13 +361,17 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//*******************************************************************************************************/
 
 		// test DT -> VD
-        /****************************************************************************************************
+        //****************************************************************************************************
 		voronoiShatter.getVDFormDT();
 		
 		output = MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
 		output += MString("Edge num: ")+ voronoiShatter.VDedge.size();
 		output += MString("Face num: ")+ voronoiShatter.VDfaceIndex.size();
 		output += MString(" Polygon num: ")+ voronoiShatter.VDpolyIndex.size(); 
+	//	output += MString("Last 2 Face : ")+ voronoiShatter.VDfaceIndex.at(2);
+		output += MString("Face : ")+ voronoiShatter.VDfaceIndex.at(4);
+		output += MString(" Polygon : ")+ voronoiShatter.VDpolyIndex.at(1); 
+
 		//****************************************************************************************************/
 
 		// test split mesh

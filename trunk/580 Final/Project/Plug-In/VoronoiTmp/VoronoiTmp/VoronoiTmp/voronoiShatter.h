@@ -25,6 +25,7 @@
 #include <maya/MBoundingBox.h>
 #include <maya/MMatrix.h>
 #include <maya/MDagPath.h>
+#include <maya/MPointArray.h>
 
 // STL include
 //
@@ -177,6 +178,7 @@ public:
 	Vertex endVertex;
 	int key;
 
+
 	bool operator<(const inSetEdge& edge) const{
 		if(this->startVertex<edge.startVertex)
 			return true;
@@ -268,8 +270,21 @@ public:
 	std::set<Vertex> vertexSet;
 	std::set<Vertex>::iterator checkVertex;
 	std::set<inSetEdge> edgeSet;
-	std::set<inSetEdge>::iterator currentEdge;
+	std::set<inSetEdge>::iterator currentEdgeItr;
+//	std::set<inSetEdge>::iterator findEdge;
+	std::set<inSetEdge> usedEdgeSet;
+	std::set<inSetEdge>::iterator usedEdgeItr;
+	
+	bool checkEdge( Tetrahedron t, Vertex start, Vertex end );
+	Vertex findSphereCenter( Tetrahedron t );
 
+	std::vector<int> test;
+
+
+	//receive
+
+	MPointArray pArray;
+	void getPolyFace(int faceId, MPointArray a);
 private:
 
 	// Private method
@@ -319,8 +334,7 @@ private:
 	MMatrix      tMatrix;      // transform matrix
 	MDagPath      vMesh;        // mesh to play with
 
-	bool checkEdge( Tetrahedron t, std::set<inSetEdge>::iterator inSetEdge );
-	Vertex findSphereCenter( Tetrahedron t );
+	
 };
 
 #endif
