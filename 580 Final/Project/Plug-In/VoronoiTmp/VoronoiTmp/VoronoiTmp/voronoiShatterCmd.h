@@ -43,7 +43,9 @@ public:
 	MStatus		directModifier( MObject mesh );
 
 	MObject     createTetraMesh(Tetrahedron tetra, MFnMesh &meshFn);
-	void        assignShader(MObject mesh, MFnMesh meshFn,MDagPath dagPath);
+	void        assignShader(MObject &mesh, MFnMesh &meshFn,MDagPath &dagPath);
+	void        displayLocator(MPoint p);
+	//void        split(MDagPath &dagPath);
 
 private:
 
