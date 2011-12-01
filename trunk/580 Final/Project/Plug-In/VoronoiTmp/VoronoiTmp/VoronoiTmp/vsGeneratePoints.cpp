@@ -54,28 +54,34 @@ VertexSet VoronoiShatter::generatePoints(int total, int section){
 			section_total=(int)(((1/pow((double)k,2))/sum)*total);//how many points does each section has.
 		}
 
-		for(int i=0; i<section_total;)
+		for(int i=0; i<=section_total;)
 		{
-			//srand ( time(NULL) );
+			// random process
 			double x = pow(-1.0,rand())*rand();
 			double y = pow(-1.0,rand())*rand();
 			double z = pow(-1.0,rand())*rand();
 			double A = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
 
+			// clamp
 			temp_v.point.x = (x/A)*((rand()%((int)sect_length)+1)+sect_length*(k-1))+center.x;
 			temp_v.point.y = (y/A)*((rand()%((int)sect_length)+1)+sect_length*(k-1))+center.y;
 			temp_v.point.z = (z/A)*((rand()%((int)sect_length)+1)+sect_length*(k-1))+center.z;
 			temp_v.point.w = 1.0;
-			if(!(temp_v.point.x>max.x || temp_v.point.x<min.x ||temp_v.point.y>max.y || temp_v.point.y<min.y ||temp_v.point.z>max.z || temp_v.point.z<min.z))
+
+		if(!(temp_v.point.x>max.x || temp_v.point.x<min.x ||temp_v.point.y>max.y || temp_v.point.y<min.y ||temp_v.point.z>max.z || temp_v.point.z<min.z))
 			{
-				if(setV.find(temp_v)!= setV.end())
+				if(setV.find(temp_v)== setV.end())
 				{
 					setV.insert(temp_v);
 					counter++;
 					i++;
 				}
 			}
+			/*setV.insert(temp_v);
+			counter++;
+			i++;*/
 		}
+		
 	}
 	return setV;
 }
