@@ -867,12 +867,12 @@ void VoronoiShatter::getPolyFace(int faceId, MPointArray &a)
 		{
 			int startVertexId, endVertexId;
 			startVertexId = VDedge.at(j).startVertexId;
-			endVertexId = VDedge.at(j).endVertexId;
+			//endVertexId = VDedge.at(j).endVertexId;
 			a.append(VDvertex.at(startVertexId).point);
-			a.append(VDvertex.at(endVertexId).point);
+			//a.append(VDvertex.at(endVertexId).point);
 		}
 
 	//
-		a.remove(a.length()-1);
+		//a.remove(a.length()-1);
 	return;
 }
