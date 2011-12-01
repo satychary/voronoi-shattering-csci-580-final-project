@@ -239,12 +239,8 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		MPoint point1(0,1,0,1);
 		voronoiShatter.insertOnePoint(point1);
 		this->displayLocator(point1);
-		voronoiShatter.insertOnePoint(point1);
 
-		MPoint point2(0,6,0,1);
-		voronoiShatter.insertOnePoint(point2);
-		this->displayLocator(point2);
-		voronoiShatter.insertOnePoint(point2);
+		//voronoiShatter.insertOnePoint(point2);
 		//voronoiShatter.insertOnePoint(point);
 	    //cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
 	//	fDGModifier.commandToExecute(cmd);
@@ -387,50 +383,58 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 
 		// test DT -> VD
         //****************************************************************************************************
+		output = MString("GAN OUTSIDE!!! \n");		
 		voronoiShatter.getVDFormDT();
-		/**/std::vector<int>::iterator polyItr = voronoiShatter.VDpolyIndex.begin();
+		std::vector<int>::iterator polyItr = voronoiShatter.VDpolyIndex.begin();
 		for(;polyItr!=voronoiShatter.VDpolyIndex.end();polyItr++){
-			int polyID = *polyItr;
-			int startFaceId;
-			int endFaceId;
-			int faceCount;
+			output += MString("GAN POLY!!! \n"); 
+		//	int polyID = *polyItr;
+		//	int startFaceId;
+		//	int endFaceId;
+		//	int faceCount;
 	
-			startFaceId = *polyItr;
-			polyItr++;
-			endFaceId = *polyItr;
-			polyItr--;
-			faceCount = endFaceId - startFaceId;
+		//	startFaceId = *polyItr;
+		//	polyItr++;
+		//	endFaceId = *polyItr;
+		//	polyItr--;
+		//	faceCount = endFaceId - startFaceId;
 
-			MPointArray vertexArray;
-			MIntArray polyCounts;
-			MIntArray polyConnects;
-			MPointArray pointArr;
-			for(int i=startFaceId;i<endFaceId;i++)
-			{
-				//MPointArray pointArr;
-				voronoiShatter.getPolyFace(i,pointArr);
-				polyCounts.append(pointArr.length());
-				for(int j=0;j<pointArr.length();j++){
-					vertexArray.append(pointArr[j]);
-					this->displayLocator(pointArr[j]);
-				}
-			}
-			for(int j=0;j<vertexArray.length();j++){
-				polyConnects.append(j);
-			}
-			MObject newMesh;
-			newMesh = meshFn.create(vertexArray.length(),faceCount,vertexArray,polyCounts,polyConnects);
+		//	MPointArray vertexArray;
+		//	MIntArray polyCounts;
+		//	MIntArray polyConnects;
+		//	MPointArray pointArr;
+		//	int vertexCount = 0;
+
+		//	for(int i=startFaceId;i<endFaceId;i++)
+		//	{
+		//		output += MString("GAN!!! \n"); 
+		//		//MPointArray pointArr;
+		//		voronoiShatter.getPolyFace(i,pointArr);
+		//	/*	MObject newMesh;
+		//		newMesh = meshFn.addPolygon(pointArr);
+		//		meshFn.updateSurface();*/
+		//		polyCounts.append(pointArr.length());
+		//		for(int j=0;j<pointArr.length();j++){
+		//			vertexArray.append(pointArr[j]);
+		//			polyConnects.append(vertexCount);
+		//			vertexCount ++;
+		//			this->displayLocator(pointArr[j]);
+		//		}
+		//	}
+		//	/*
+		//	MObject newMesh;
+		//	newMesh = meshFn.create(vertexArray.length(),faceCount,vertexArray,polyCounts,polyConnects);
+		//	meshFn.updateSurface();*/
 		} 
-		std::vector<Vertex>::iterator itr = voronoiShatter.VDvertex.begin();
+		/*std::vector<Vertex>::iterator itr = voronoiShatter.VDvertex.begin();
 		for(;itr!=voronoiShatter.VDvertex.end();itr++)
 		{
 			this->displayLocator(itr->point);
-		}
-		output = MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
+		}*/
+		output += MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
 		output += MString("Edge num: ")+ voronoiShatter.VDedge.size();
 		output += MString("Face num: ")+ voronoiShatter.VDfaceIndex.size();
 		output += MString(" Polygon num: ")+ voronoiShatter.VDpolyIndex.size(); 
-	//	output += MString("Last 2 Face : ")+ voronoiShatter.VDfaceIndex.at(2);
 		output += MString("Face : ")+ voronoiShatter.VDfaceIndex.at(4);
 		output += MString(" Polygon : ")+ voronoiShatter.VDpolyIndex.size();
 
