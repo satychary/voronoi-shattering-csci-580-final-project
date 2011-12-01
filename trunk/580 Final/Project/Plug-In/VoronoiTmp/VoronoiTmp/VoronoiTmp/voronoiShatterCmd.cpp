@@ -240,6 +240,10 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		voronoiShatter.insertOnePoint(point1);
 		this->displayLocator(point1);
 
+		MPoint point2(5,0,1,1);
+		voronoiShatter.insertOnePoint(point2);
+		this->displayLocator(point2);
+
 		//voronoiShatter.insertOnePoint(point2);
 		//voronoiShatter.insertOnePoint(point);
 	    //cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
@@ -382,46 +386,53 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		//*******************************************************************************************************/
 
 		// test DT -> VD
-        /****************************************************************************************************
-		output = MString("GAN OUTSIDE!!! \n");		
-		voronoiShatter.getVDFormDT();
-		std::vector<int>::iterator polyItr = voronoiShatter.VDpolyIndex.begin();
-		for(;polyItr!=voronoiShatter.VDpolyIndex.end()-1;polyItr++){
-			output += MString("GAN POLY!!! \n"); 
+        //****************************************************************************************************
+		//output = MString("GAN OUTSIDE!!! \n");		
+		//voronoiShatter.getVDFormDT();
+		//std::vector<int>::iterator polyItr = voronoiShatter.VDpolyIndex.begin();
+		//for(;polyItr!=voronoiShatter.VDpolyIndex.end()-1;polyItr++){
+		//	output += MString("GAN POLY!!! \n"); 
 		//	int polyID = *polyItr;
 		//	int startFaceId;
 		//	int endFaceId;
 		//	int faceCount;
 	
 		//	startFaceId = *polyItr;
+		//	output += MString("start:") + startFaceId; 
 		//	polyItr++;
 		//	endFaceId = *polyItr;
+		//	output += MString("end:") + endFaceId; 
 		//	polyItr--;
 		//	faceCount = endFaceId - startFaceId;
 
 		//	MPointArray vertexArray;
 		//	MIntArray polyCounts;
 		//	MIntArray polyConnects;
-		//	MPointArray pointArr;
 		//	int vertexCount = 0;
 
 		//	for(int i=startFaceId;i<endFaceId;i++)
 		//	{
 		//		output += MString("GAN!!! \n"); 
-		//		//MPointArray pointArr;
+		//		MPointArray pointArr;
 		//		voronoiShatter.getPolyFace(i,pointArr);
-		//	/*	MObject newMesh;
-		//		newMesh = meshFn.addPolygon(pointArr);
-		//		meshFn.updateSurface();*/
-		//		polyCounts.append(pointArr.length());
-		//		for(int j=0;j<pointArr.length();j++){
-		//			vertexArray.append(pointArr[j]);
-		//			polyConnects.append(vertexCount);
-		//			vertexCount ++;
-		//			this->displayLocator(pointArr[j]);
+		//		output += MString("length:") + pointArr.length();
+		//		for(int i=0;i<pointArr.length();i++)
+		//		{
+		//			this->displayLocator(pointArr[i]);
 		//		}
+		//		MObject newMesh;
+		//		newMesh = meshFn.addPolygon(pointArr);
+		//		meshFn.updateSurface();
 		//	}
-		//	/*
+		//	//	polyCounts.append(pointArr.length());
+		//	//	for(int j=0;j<pointArr.length();j++){
+		//	//		vertexArray.append(pointArr[j]);
+		//	//		polyConnects.append(vertexCount);
+		//	//		vertexCount ++;
+		//	//		this->displayLocator(pointArr[j]);
+		//	//	}
+		//	}
+			/*
 		//	MObject newMesh;
 		//	newMesh = meshFn.create(vertexArray.length(),faceCount,vertexArray,polyCounts,polyConnects);
 		//	meshFn.updateSurface();*/
@@ -431,12 +442,18 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		{
 			this->displayLocator(itr->point);
 		}*/
-		/*output += MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
+		/*output += MString("faceIndex:\n");
+		std::vector<int>::iterator faceIndexItr = voronoiShatter.VDfaceIndex.begin();
+		for(;faceIndexItr!=voronoiShatter.VDfaceIndex.end();faceIndexItr++)
+		{
+			output += MString(" ") + *faceIndexItr;
+		}*/
+		output += MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
 		output += MString("Edge num: ")+ voronoiShatter.VDedge.size();
 		output += MString("Face num: ")+ voronoiShatter.VDfaceIndex.size();
 		output += MString(" Polygon num: ")+ voronoiShatter.VDpolyIndex.size(); 
 		output += MString("Face : ")+ voronoiShatter.VDfaceIndex.at(4);
-		output += MString(" Polygon : ")+ voronoiShatter.VDpolyIndex.size();*/
+		output += MString(" Polygon : ")+ voronoiShatter.VDpolyIndex.size();
 
 		//****************************************************************************************************/
 
