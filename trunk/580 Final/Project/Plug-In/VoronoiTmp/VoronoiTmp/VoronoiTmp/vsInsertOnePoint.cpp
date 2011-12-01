@@ -16,7 +16,14 @@ void VoronoiShatter::insertOnePoint(MPoint p){
 	//get a tetrahedron t
 	Tetrahedron t; 
 
-	findPoint(p, t);
+	if( findPoint(p, t) == false ) return;
+	cout<<"p: "<<p.x<<","<<p.y<<","<<p.z<<endl;
+	
+	//cancel insert if p is directly on a face
+	if( orient( t.v1, t.v2, t.v3, p ) == 0 ) return;
+	if( orient( t.v1, t.v2, t.v4, p ) == 0 ) return;
+	if( orient( t.v1, t.v3, t.v4, p ) == 0 ) return;
+	if( orient( t.v2, t.v3, t.v4, p ) == 0 ) return;
 
 	//t -> do flip14
 	//flip14 only happens here
