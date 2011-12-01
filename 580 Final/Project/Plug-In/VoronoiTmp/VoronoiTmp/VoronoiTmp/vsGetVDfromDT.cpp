@@ -16,6 +16,7 @@
 
 void equation2( double *x, double *y, double a1, double b1, double c1, double a2, double b2, double c2 );
 void equation3(double *x, double *y, double *z, double a1, double b1, double c1, double d1, double a2, double b2, double c2, double d2, double a3, double b3, double c3, double d3);
+//double TTDet(double a, double b, double c, double d, double e, double f, double g, double h, double i);
 
 void VoronoiShatter::getVDFormDT(){
 
@@ -413,6 +414,9 @@ void VoronoiShatter::getVDFormDT(){
 				// find VD's vertex vp of currentTetra
 				Vertex vp;
 				vp = findSphereCenter( currentTetra );
+					test.push_back(vp.point.x);
+	test.push_back(vp.point.y);
+	test.push_back(vp.point.z);
 				// end of finding VD's vertex vp of currentTetra
 				std::cerr<<"Vertex: "<<std::endl;	
 				// put vp into VDvertex
@@ -600,7 +604,7 @@ void VoronoiShatter::getVDFormDT(){
 
 	}//end while of vertex stk
 		
-	
+
 	return;
 }
 
@@ -658,8 +662,14 @@ equation2(x, y, a1 * c2 - a2 * c1, b1 * c2 - b2 * c1, d1 * c2 - d2 * c1, a1 * c3
 *z = (d1 - a1 * *x - b1 * *y) / c1;
 return;
 }
-
-
+/*
+double TTDet(double a, double b, double c, double, double d, double e, double f, double g, double h, double i)
+{
+	double det = 0;
+	 
+	det = a*e*i + b*f*g + c*d*h - c*e*g - b*d*i - a*f*h;
+	return det;
+}*/
 
 Vertex VoronoiShatter::findSphereCenter( Tetrahedron t )
 {
@@ -700,7 +710,7 @@ Vertex VoronoiShatter::findSphereCenter( Tetrahedron t )
 	z4 = t.v4.point.z;
 
 
-
+	
 	double x, y, z;
 	double a1, b1, c1, d1;
 	double a2, b2, c2, d2;
@@ -721,7 +731,34 @@ Vertex VoronoiShatter::findSphereCenter( Tetrahedron t )
 	c3 = ( -2*z3 + 2*z4 );
 	d3 = ( x4 + x3 )*( x4 - x3 ) + ( y4 + y3 )*( y4 - y3 ) + ( z4 + z3 )*( z4 - z3 );
 
-	equation3(&x, &y, &z, a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3);
+//	equation3(&x, &y, &z, a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3);
+	
+
+
+	double cram_x_up;
+	double cram_y_up;
+	double cram_z_up;
+	double detA;
+                              
+	//detA = TTDet( a1, b1, c1, a2, b2, c2, a3, b3, c3 ) ;
+	detA =	a1*b2*c3 + b1*c2*a3 + c1*a2*b3 - c1*b2*a3 - b1*a2*c3 - a1*c2*b3;
+	
+	                                            
+	//cram_x_up = TTDet( d1, b1, c1, d2, b2, c2, d3, b3, c3 );
+	cram_x_up = d1*b2*c3 + b1*c2*d3 + c1*d2*b3 - c1*b2*d3 - b1*d2*c3 - d1*c2*b3;
+
+	    
+	//cram_y_up = TTDet( a1, d1, c1, a2, d2, c2, a3, d3, c3 );
+	cram_y_up = a1*d2*c3 + d1*c2*a3 + c1*a2*d3 - c1*d2*a3 - d1*a2*c3 - a1*c2*d3;
+
+	    //                                       a   b     c     d    e    f     g   h      i
+	//cram_z_up = TTDet( a1, b1, d1, a2, b2, d2, a3, b3, d3 );
+	cram_z_up = a1*b2*d3 + b1*d2*a3 + d1*a2*b3 - d1*b2*a3 - b1*a2*d3 - a1*d2*b3;
+
+	x = cram_x_up / detA;
+	y = cram_y_up / detA;
+	z = cram_z_up / detA;
+
 
 	center.point.x = x;
 	center.point.y = y;
@@ -730,19 +767,19 @@ Vertex VoronoiShatter::findSphereCenter( Tetrahedron t )
 	return center;
 }
 
-void VoronoiShatter::getPolyFace(int faceId, MPointArray a)
+void VoronoiShatter::getPolyFace(int polyId, MPointArray a)
 {
 	int startFaceId;
 	int endFaceId;
-//	startFaceId = (int)VDpolyIndex.at(polyId);
-//	endFaceId = (int)VDpolyIndex.at(polyId+1);
+	startFaceId = (int)VDpolyIndex.at(polyId);
+	endFaceId = (int)VDpolyIndex.at(polyId+1);
 	
 
-//	for(int i=startFaceId; i<endFaceId; i++)
-//	{
+	for(int i=startFaceId; i<endFaceId; i++)
+{
 		int startEdgeId, endEdgeId;
-		startEdgeId = VDfaceIndex.at(faceId);
-		endEdgeId = VDfaceIndex.at( faceId+1 );
+		startEdgeId = VDfaceIndex.at(i);
+		endEdgeId = VDfaceIndex.at( i+1 );
 
 		for(int j=startEdgeId; j<endEdgeId; j++)
 		{
@@ -753,6 +790,6 @@ void VoronoiShatter::getPolyFace(int faceId, MPointArray a)
 			a.append(VDvertex.at(endVertexId).point);
 		}
 
-//	}
+	}
 	return;
 }
