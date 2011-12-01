@@ -868,6 +868,6 @@ void VoronoiShatter::getPolyFace(int faceId, MPointArray a)
 			a.append(VDvertex.at(endVertexId).point);
 		}
 
-	}
+	//}
 	return;
 }
