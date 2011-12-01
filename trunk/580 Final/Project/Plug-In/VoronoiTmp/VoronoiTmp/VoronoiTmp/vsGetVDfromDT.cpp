@@ -61,6 +61,7 @@ void VoronoiShatter::getVDFormDT(){
 	
 	while( !vertexSet.empty() )
 	{
+		first_vertex_flag = 0;
 		// not sure
 		// choose one vertex p
 		checkVertex = vertexSet.begin();	
@@ -212,7 +213,7 @@ void VoronoiShatter::getVDFormDT(){
 			
 			// find the edge from which tetra
 			currentKey = currentEdgeItr->key; 
-	//		first_vertex_flag = 0;
+		first_vertex_flag = 0;
 			firstTetraKey = currentEdgeItr->key;
 		}
 				
@@ -414,9 +415,7 @@ void VoronoiShatter::getVDFormDT(){
 				// find VD's vertex vp of currentTetra
 				Vertex vp;
 				vp = findSphereCenter( currentTetra );
-					test.push_back(vp.point.x);
-	test.push_back(vp.point.y);
-	test.push_back(vp.point.z);
+		
 				// end of finding VD's vertex vp of currentTetra
 				std::cerr<<"Vertex: "<<std::endl;	
 				// put vp into VDvertex
@@ -428,6 +427,7 @@ void VoronoiShatter::getVDFormDT(){
 					nowVertexId = VDvertex.size()-1;
 					
 				}
+			
 
 				if(flag==1 || (flag==4&&cou!=0)){
 				// recode the VDedge
@@ -478,6 +478,7 @@ void VoronoiShatter::getVDFormDT(){
 						currentKey = t1.key;
 						std::cerr<<"t1: "<<t1.key<<std::endl;
 						std::cerr<<"currentKey - End - t1: "<< currentKey<<std::endl;	
+								first_vertex_flag = 1;
 						if(flag==4)
 						{
 							flag=4;
@@ -495,6 +496,7 @@ void VoronoiShatter::getVDFormDT(){
 						currentKey = t2.key;
 						std::cerr<<"t2: "<<t2.key<<std::endl;	
 						std::cerr<<"currentKey - End - t2: "<< currentKey<<std::endl;	
+								first_vertex_flag = 1;
 						if(flag==4)
 						{
 							flag=4;
@@ -513,6 +515,7 @@ void VoronoiShatter::getVDFormDT(){
 						std::cerr<<"t3: "<<t3.key<<std::endl;	
 						std::cerr<<"currentKey - End - t3: "<< currentKey<<std::endl;	
 						std::cerr<<"previoueKey - End "<< previousTetraKey<<std::endl;	
+								first_vertex_flag = 1;
 						if(flag==4)
 						{
 							flag=4;
@@ -530,6 +533,7 @@ void VoronoiShatter::getVDFormDT(){
 						currentKey = t4.key;
 						std::cerr<<"t4: "<<t4.key<<std::endl;	
 						std::cerr<<"currentKey - End - t4: "<< currentKey<<std::endl;	
+								first_vertex_flag = 1;
 						if(flag==4)
 						{
 							flag=4;
@@ -552,13 +556,13 @@ void VoronoiShatter::getVDFormDT(){
 			}// end while of find neighbor
 		if(flag==2  )
 		{
-			first_vertex_flag = 1;
+	
 				// first vertex and last vertex
 				Edge vdEdge;
 				vdEdge.startVertexId = VDvertex.size() - 1;
 				vdEdge.endVertexId = nowVertexId;
 				VDedge.push_back( vdEdge );
-			//	first_vertex_flag = 0;
+				first_vertex_flag = 0;
 				std::cerr<<"First and Last Vertex"<<std::endl;	
 		}
 		if(flag==2 )
@@ -604,6 +608,80 @@ void VoronoiShatter::getVDFormDT(){
 
 	}//end while of vertex stk
 		
+	std::cerr<<"v1x: "<<VDvertex.at(0).point.x<<std::endl;
+	std::cerr<<"v1x: "<<VDvertex.at(0).point.y<<std::endl;
+	std::cerr<<"v1x: "<<VDvertex.at(0).point.z<<std::endl;
+
+	std::cerr<<"v2x: "<<VDvertex.at(1).point.x<<std::endl;
+	std::cerr<<"v2x: "<<VDvertex.at(1).point.y<<std::endl;
+	std::cerr<<"v2x: "<<VDvertex.at(1).point.z<<std::endl;
+
+
+	std::cerr<<"v3x: "<<VDvertex.at(2).point.x<<std::endl;
+	std::cerr<<"v3x: "<<VDvertex.at(2).point.y<<std::endl;
+	std::cerr<<"v3x: "<<VDvertex.at(2).point.z<<std::endl;
+
+
+	std::cerr<<"v4x: "<<VDvertex.at(3).point.x<<std::endl;
+	std::cerr<<"v4x: "<<VDvertex.at(3).point.y<<std::endl;
+	std::cerr<<"v4x: "<<VDvertex.at(3).point.z<<std::endl;
+
+	std::cerr<<"v5x: "<<VDvertex.at(4).point.x<<std::endl;
+	std::cerr<<"v5x: "<<VDvertex.at(4).point.y<<std::endl;
+	std::cerr<<"v5x: "<<VDvertex.at(4).point.z<<std::endl;
+
+	std::cerr<<"v6x: "<<VDvertex.at(5).point.x<<std::endl;
+	std::cerr<<"v6x: "<<VDvertex.at(5).point.y<<std::endl;
+	std::cerr<<"v6x: "<<VDvertex.at(5).point.z<<std::endl;
+
+	std::cerr<<"v7x: "<<VDvertex.at(6).point.x<<std::endl;
+	std::cerr<<"v7x: "<<VDvertex.at(6).point.y<<std::endl;
+	std::cerr<<"v7x: "<<VDvertex.at(6).point.z<<std::endl;
+
+	std::cerr<<"v8x: "<<VDvertex.at(7).point.x<<std::endl;
+	std::cerr<<"v8x: "<<VDvertex.at(7).point.y<<std::endl;
+	std::cerr<<"v8x: "<<VDvertex.at(7).point.z<<std::endl;
+
+	std::cerr<<"v9x: "<<VDvertex.at(8).point.x<<std::endl;
+	std::cerr<<"v9x: "<<VDvertex.at(8).point.y<<std::endl;
+	std::cerr<<"v9x: "<<VDvertex.at(8).point.z<<std::endl;
+
+	std::cerr<<"v10x: "<<VDvertex.at(9).point.x<<std::endl;
+	std::cerr<<"v10x: "<<VDvertex.at(9).point.y<<std::endl;
+	std::cerr<<"v10x: "<<VDvertex.at(9).point.z<<std::endl;
+
+	std::cerr<<"v11x: "<<VDvertex.at(10).point.x<<std::endl;
+	std::cerr<<"v11x: "<<VDvertex.at(10).point.y<<std::endl;
+	std::cerr<<"v11x: "<<VDvertex.at(10).point.z<<std::endl;
+
+	std::cerr<<"v12x: "<<VDvertex.at(11).point.x<<std::endl;
+	std::cerr<<"v12x: "<<VDvertex.at(11).point.y<<std::endl;
+	std::cerr<<"v12x: "<<VDvertex.at(11).point.z<<std::endl;
+
+	std::cerr<<"e1: "<<VDedge.at(0).startVertexId<<std::endl;
+	std::cerr<<"e1: "<<VDedge.at(0).endVertexId<<std::endl;
+
+
+		std::cerr<<"e2: "<<VDedge.at(1).startVertexId<<std::endl;
+	std::cerr<<"e2: "<<VDedge.at(1).endVertexId<<std::endl;
+
+		std::cerr<<"e3: "<<VDedge.at(2).startVertexId<<std::endl;
+	std::cerr<<"e3: "<<VDedge.at(2).endVertexId<<std::endl;
+
+		std::cerr<<"e4: "<<VDedge.at(3).startVertexId<<std::endl;
+	std::cerr<<"e4: "<<VDedge.at(3).endVertexId<<std::endl;
+
+		std::cerr<<"e5: "<<VDedge.at(4).startVertexId<<std::endl;
+	std::cerr<<"e5: "<<VDedge.at(4).endVertexId<<std::endl;
+
+		std::cerr<<"e6: "<<VDedge.at(5).startVertexId<<std::endl;
+	std::cerr<<"e6: "<<VDedge.at(5).endVertexId<<std::endl;
+
+//		std::cerr<<"e7: "<<VDedge.at(6).startVertexId<<std::endl;
+//	std::cerr<<"e7: "<<VDedge.at(6).endVertexId<<std::endl;
+
+	
+
 
 	return;
 }
