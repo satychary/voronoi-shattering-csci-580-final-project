@@ -17,6 +17,7 @@
 //
 #include <maya/MItMeshPolygon.h>
 #include <maya/MItMeshEdge.h>
+#include <maya/MItMeshVertex.h>
 
 // General
 //
@@ -63,7 +64,7 @@ public:
 	MPoint point;
 	int incidentTetra;
 
-	Vertex(){ e = 0.00001f;}
+	Vertex(){ e = 0.000001f;}
 
 	bool operator<(const Vertex& v) const{
 		if(this->point.x<v.point.x)
@@ -71,8 +72,9 @@ public:
 		if(abs(point.x-v.point.x)<e && 
 			this->point.y < v.point.y)
 			return true;
-		if(abs(point.y-v.point.y)<e && 
-			this->point.z < v.point.z)
+		if(abs(point.x - v.point.x)<e 
+			&& abs(point.y-v.point.y)<e 
+			&& this->point.z < v.point.z)
 			return true;
 	/*	else if(this->point.y<v.point.y)
 			return true;
@@ -217,6 +219,7 @@ typedef std::map<int, Tetrahedron> TetraMap;                // tetrahedron map t
 typedef std::pair<int, Tetrahedron> TetraMapItem;           // tetrahedron item type
 typedef std::map<int, Tetrahedron>::iterator TetraMapItr;   // tetrahedron iterator type
 typedef std::set<Vertex>       VertexSet;
+typedef std::set<Vertex>::iterator VertexSetItr;
 
 class VoronoiShatter
 {
@@ -243,7 +246,11 @@ public:
 
 	// mesh functions
 	void setMesh(MDagPath mesh);
-	void splitMesh(MDagPath &dagPath, Plane plane); // split a mesh using a plane
+	void splitMesh(MDagPath &mesh, Plane plane, int orient);
+    void split(MDagPath &dagPath, Tetrahedron tetra);
+	void vertexToPlane(Vertex v1, Vertex v2, Vertex v3, Plane &plane);
+	float getFactor(MPoint a, MPoint b, MPoint insert);
+	MPoint getLinePlaneIntersection(Line line, Plane plane);
 
 	// Mian action
 	void perform();
@@ -284,7 +291,7 @@ public:
 	//receive
 
 	MPointArray pArray;
-	void getPolyFace(int faceId, MPointArray a);
+	void getPolyFace(int faceId, MPointArray &a);
 private:
 
 	// Private method
@@ -307,7 +314,6 @@ private:
 															return flase if:
 											                key not exist */
 	// assistant funs for splitMesh
-	MPoint getLinePlaneIntersection(Line line, Plane plane);
 	Vector crossProduct(Vector v1, Vector v2);
 
 	//assistant functions in addPoint
