@@ -576,7 +576,7 @@ void VoronoiShatter::getVDFormDT(){
 
 				vdEdgeTag = VDedge.size();
 		//		if(vdEdgeTag!=0)
-					VDfaceIndex.push_back( vdEdgeTag );
+					VDfaceIndex.push_back( vdEdgeTag);
 				// end of VDface
 					flag = 3;
 					
@@ -596,7 +596,7 @@ void VoronoiShatter::getVDFormDT(){
 		*/
 		vdFaceTag = VDfaceIndex.size();
 	//	if(vdFaceTag!=0)
-			VDpolyIndex.push_back( vdFaceTag );
+			VDpolyIndex.push_back( vdFaceTag-1 );
 		//end if VDpoly
 
 		// erase the vertex
@@ -677,11 +677,15 @@ void VoronoiShatter::getVDFormDT(){
 		std::cerr<<"e6: "<<VDedge.at(5).startVertexId<<std::endl;
 	std::cerr<<"e6: "<<VDedge.at(5).endVertexId<<std::endl;
 
-//		std::cerr<<"e7: "<<VDedge.at(6).startVertexId<<std::endl;
-//	std::cerr<<"e7: "<<VDedge.at(6).endVertexId<<std::endl;
+	std::cerr<<"face1 "<<VDfaceIndex.at(0)<<std::endl;
+	std::cerr<<"face2: "<<VDfaceIndex.at(1)<<std::endl;
+	std::cerr<<"face3: "<<VDfaceIndex.at(2)<<std::endl;
+	std::cerr<<"face4: "<<VDfaceIndex.at(3)<<std::endl;
+		std::cerr<<"face5: "<<VDfaceIndex.at(4)<<std::endl;
 
 	
-
+			std::cerr<<"poly1 "<<VDpolyIndex.at(0)<<std::endl;
+	std::cerr<<"poly2: "<<VDpolyIndex.at(1)<<std::endl;
 
 	return;
 }
