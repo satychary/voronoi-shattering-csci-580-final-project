@@ -45,6 +45,7 @@ public:
 	MObject     createTetraMesh(Tetrahedron tetra, MFnMesh &meshFn);
 	void        assignShader(MObject &mesh, MFnMesh &meshFn,MDagPath &dagPath);
 	void        displayLocator(MPoint p);
+	void        merge(MString name, int i1, int i2);
 	//void        split(MDagPath &dagPath);
 
 private:
