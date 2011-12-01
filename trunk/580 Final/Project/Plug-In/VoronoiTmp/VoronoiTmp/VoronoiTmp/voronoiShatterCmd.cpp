@@ -49,6 +49,14 @@
 
 const char *numberFlag = "-n", *numberLongFlag = "-number";
 const char *sectionFlag = "-s", *sectionLongFlag = "-section";
+
+void VoronoiShatterCmd::displayLocator(MPoint p)
+{
+	   MString v;
+		v = MString("spaceLocator -p ") + p.x + " " + p.y + " " + p.z + ";";
+	    fDGModifier.commandToExecute(v);
+}
+
 //	Description:
 //		voronoiShatterCmd constructor
 VoronoiShatterCmd::VoronoiShatterCmd(void){
@@ -159,9 +167,10 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		voronoiShatter.setTransformMatrix(mx);
 		voronoiShatter.setBoundingBox(bbx);
 		Tetrahedron tetra = voronoiShatter.initializeBigTetra();
+		TetraMap pool = voronoiShatter.getPool();
 
 		MString output;
-		output = MString("Hello ") + tetra.key;
+	//	output = MString("Hello ") + tetra.key;
 	//	output = MString("Max:") + max.x + "," + max.y + "," + max.z +"," + max.w;
 	//	output += MString("Min:") + min.x + "," + min.y + "," + min.z + "," + min.w;
 		
@@ -182,6 +191,11 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		}
         //*****************************************************************************/
 		
+		// copy mesh
+		/******************************************************************************
+		nodeFn.duplicate();
+		//*****************************************************************************/
+
 		// create big tetra mesh
 		//******************************************************************************		
 		newMesh = createTetraMesh(tetra, meshFn);
@@ -208,22 +222,29 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			argData.getFlagArgument( sectionFlag, 0, numSections );
 
 		MPoint* points;
+		VertexSet vertex;
+		VertexSetItr vItr;
 		MString locatorCmd;
-		points = voronoiShatter.generatePoints(numPoints,numSections);
-		for(int i=0;i<numPoints;i++){
-			locatorCmd = MString("spaceLocator -a -p ") + points[i].x + " " + points[i].y + " " + points[i].z + ";";
-			status = fDGModifier.commandToExecute(locatorCmd);
+		vertex = voronoiShatter.generatePoints(numPoints,numSections);
+		vItr = vertex.begin();
+		for(;vItr!=vertex.end();vItr++){
+			this->displayLocator(vItr->point);
+			voronoiShatter.insertOnePoint(vItr->point);
 		}
+		fDGModifier.doIt();
 		/************************************************************************************************************/
 
 		// Insert on point
 		//****************************************************
-		MPoint point(0,0,0,1);
-		voronoiShatter.insertOnePoint(point);
-		MString cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
-		fDGModifier.commandToExecute(cmd);
-		point.y = 1;
-		point.x = 2;
+		MPoint point1(0,1,0,1);
+		voronoiShatter.insertOnePoint(point1);
+		this->displayLocator(point1);
+		voronoiShatter.insertOnePoint(point1);
+
+		MPoint point2(0,6,0,1);
+		voronoiShatter.insertOnePoint(point2);
+		this->displayLocator(point2);
+		voronoiShatter.insertOnePoint(point2);
 		//voronoiShatter.insertOnePoint(point);
 	    //cmd = MString("spaceLocator -p ") + point.x + " " + point.y + " " + point.z + ";";
 	//	fDGModifier.commandToExecute(cmd);
@@ -231,11 +252,10 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 
 		// add polygon
 		//**********************************************************************************
-		//meshFn.setObject(newMesh);
-		TetraMap pool = voronoiShatter.getPool();
-		TetraMapItr itr= pool.begin();
-		for(;itr!=pool.end();itr++){
-			Tetrahedron tetra = itr->second;
+		pool = voronoiShatter.getPool();
+		TetraMapItr tetraItr= pool.begin();
+		for(;tetraItr!=pool.end();tetraItr++){
+			Tetrahedron tetra = tetraItr->second;
 			newMesh = createTetraMesh(tetra,meshFn);
 			assignShader(newMesh, meshFn,dagPath);
 			//MPoint tri1[3]={tetra.v1.point,tetra.v2.point,tetra.v3.point};
@@ -255,8 +275,8 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			//meshFn.addPolygon(vertexArr3);
 			//meshFn.addPolygon(vertexArr4);
 		}
-		//meshFn.updateSurface();
-	    itr= pool.begin();
+		meshFn.updateSurface();
+/*	    itr= pool.begin();
 		itr ++;
 		itr ++;
 		itr ++;
@@ -264,7 +284,7 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 			+ itr->second.neighbour2 + ", "
 			+ itr->second.neighbour3 + ","
 		  + itr->second.neighbour4 + " key"
-			+ itr->second.key;
+			+ itr->second.key;*/
 		//********************************************************************************/
 
 		// test ORIENT
@@ -298,10 +318,15 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 		// test fnMeshEdge
 		/************************************************************************************
 		MItMeshEdge edgeIt(dagPath);
-		for(;!edgeIt.isDone();edgeIt.next()){
-			output += MString("id: ") + edgeIt.index();
-		}
-		for(int i=0; i<4;edgeIt.next()){
+	//	for(;!edgeIt.isDone();edgeIt.next()){
+		//	output += MString("id: ") + edgeIt.index();
+		//}
+		output  = MString("edge A: ") + edgeIt.point(0).x + ","+edgeIt.point(0).y + ","+edgeIt.point(0).z + ";";
+		output += MString("edge B: ") + edgeIt.point(1).x + ","+edgeIt.point(1).y + ","+edgeIt.point(1).z + ";";
+		this->displayLocator(edgeIt.point(0));
+		this->displayLocator(edgeIt.point(1));
+
+	/*	for(int i=0; i<4;edgeIt.next()){
 			MPoint p = edgeIt.point(1,MSpace::kWorld);
 			p.x = 0;
 			edgeIt.setPoint(p,1,MSpace::kWorld);
@@ -357,41 +382,591 @@ MStatus VoronoiShatterCmd::doIt( const MArgList &args )
 
 		MFloatPointArray internalpoints;
 
-		meshFn.split(placements,edgeList,edgeFactors,internalpoints);
+		meshFn.split(placements,edgeList,edgeFactors,internalpoints);*/
 		//*******************************************************************************************************/
 
 		// test DT -> VD
         //****************************************************************************************************
 		voronoiShatter.getVDFormDT();
-		
+		/**/std::vector<int>::iterator polyItr = voronoiShatter.VDpolyIndex.begin();
+		for(;polyItr!=voronoiShatter.VDpolyIndex.end();polyItr++){
+			int polyID = *polyItr;
+			int startFaceId;
+			int endFaceId;
+			int faceCount;
+	
+			startFaceId = *polyItr;
+			polyItr++;
+			endFaceId = *polyItr;
+			polyItr--;
+			faceCount = endFaceId - startFaceId;
+
+			MPointArray vertexArray;
+			MIntArray polyCounts;
+			MIntArray polyConnects;
+			MPointArray pointArr;
+			for(int i=startFaceId;i<endFaceId;i++)
+			{
+				//MPointArray pointArr;
+				voronoiShatter.getPolyFace(i,pointArr);
+				polyCounts.append(pointArr.length());
+				for(int j=0;j<pointArr.length();j++){
+					vertexArray.append(pointArr[j]);
+					this->displayLocator(pointArr[j]);
+				}
+			}
+			for(int j=0;j<vertexArray.length();j++){
+				polyConnects.append(j);
+			}
+			MObject newMesh;
+			newMesh = meshFn.create(vertexArray.length(),faceCount,vertexArray,polyCounts,polyConnects);
+		} 
+		std::vector<Vertex>::iterator itr = voronoiShatter.VDvertex.begin();
+		for(;itr!=voronoiShatter.VDvertex.end();itr++)
+		{
+			this->displayLocator(itr->point);
+		}
 		output = MString("Vertex num: ")+ voronoiShatter.VDvertex.size(); 
 		output += MString("Edge num: ")+ voronoiShatter.VDedge.size();
 		output += MString("Face num: ")+ voronoiShatter.VDfaceIndex.size();
 		output += MString(" Polygon num: ")+ voronoiShatter.VDpolyIndex.size(); 
 	//	output += MString("Last 2 Face : ")+ voronoiShatter.VDfaceIndex.at(2);
 		output += MString("Face : ")+ voronoiShatter.VDfaceIndex.at(4);
-		output += MString(" Polygon : ")+ voronoiShatter.VDpolyIndex.at(1); 
+		output += MString(" Polygon : ")+ voronoiShatter.VDpolyIndex.size();
 
 		//****************************************************************************************************/
 
+        // test split
+		/***************************************************************************
+		//nodeFn.duplicate();
+		
+		pool = voronoiShatter.getPool();
+		TetraMapItr itr = pool.begin();
+		for(;itr!=pool.end();itr++){
+			// get a copy of the mesh to shatter
+			MObject copyMesh;
+			copyMesh = nodeFn.duplicate();
+			MDagPath newDagPath;
+			newDagPath = MDagPath::getAPathTo(copyMesh);
+			assignShader(copyMesh, meshFn, dagPath);
+			fDGModifier.doIt();
+			// shatter it!
+			voronoiShatter.split(newDagPath,itr->second);
+		}
+		
+		//***************************************************************************/
+		
 		// test split mesh
 		/******************************************************************************
-		Plane plane;
-		plane.pa.x = 1;
-		plane.pa.y = -3;
-		plane.pb.z = 3;
+		pool = voronoiShatter.getPool();
+		TetraMapItr itr = pool.begin();
+		tetra = itr->second;
 
-		plane.pb.x = 0;
-		plane.pb.y = 3;
-		plane.pb.z = 0;
+			MObject copyMesh;
+			copyMesh = nodeFn.duplicate();
+			MDagPath newDagPath;
+			newDagPath = MDagPath::getAPathTo(copyMesh);
+			assignShader(copyMesh, meshFn, dagPath);
+			meshFn.setObject(copyMesh);
+			fDGModifier.doIt();
 
-		plane.pc.x = -1;
-		plane.pc.y = -3;
-		plane.pc.z = -3;
+			int orient;
+			Plane plane;
 
-		voronoiShatter.splitMesh(dagPath,plane);
+			// plane 1 
+			voronoiShatter.vertexToPlane(tetra.v1,tetra.v2,tetra.v3,plane);
+			orient = voronoiShatter.orient(tetra.v1,tetra.v2,tetra.v3,tetra.v4.point);
+			voronoiShatter.splitMesh(newDagPath,plane,orient);
+			meshFn.updateSurface();
+			fDGModifier.doIt();
+			// plane 3
+			voronoiShatter.vertexToPlane(tetra.v2,tetra.v3,tetra.v4,plane);
+			orient = voronoiShatter.orient(tetra.v2,tetra.v3,tetra.v4,tetra.v1.point);
+			voronoiShatter.splitMesh(newDagPath,plane,orient);
+			meshFn.updateSurface();
+			fDGModifier.doIt();
+			// plane 2
+			voronoiShatter.vertexToPlane(tetra.v1,tetra.v2,tetra.v4,plane);
+			orient = voronoiShatter.orient(tetra.v1,tetra.v2,tetra.v4,tetra.v3.point);
+			voronoiShatter.splitMesh(newDagPath,plane,orient);
+			meshFn.updateSurface();
+			fDGModifier.doIt();
+			// plane 4
+			voronoiShatter.vertexToPlane(tetra.v1,tetra.v3,tetra.v4,plane);
+			orient =voronoiShatter.orient(tetra.v1,tetra.v3,tetra.v4,tetra.v2.point);
+			voronoiShatter.splitMesh(newDagPath,plane,orient);
+			meshFn.updateSurface();
+			fDGModifier.doIt();
+			MItMeshEdge edgeItr(newDagPath);
+			output = MString("Count£º") + edgeItr.count();
 		//******************************************************************************/
-		//meshFn.updateSurface();
+
+		// test intersection
+		/************************************************************
+		pool = voronoiShatter.getPool();
+		TetraMapItr itr = pool.begin();
+		tetra = itr->second;
+		int orient;
+		Plane plane;
+		voronoiShatter.vertexToPlane(tetra.v1,tetra.v3,tetra.v4,plane);
+		Line line;
+		line.la = MPoint(-5,-5,0.53);
+		line.lb = MPoint(5,-5,3.016);
+		this->displayLocator(line.la);
+		this->displayLocator(line.lb);
+		MPoint p;
+		p = voronoiShatter.getLinePlaneIntersection(line, plane);
+		output = MString("point: ") + p.x+","+p.y+","+p.z+";";
+		this->displayLocator(p);
+		//***********************************************************/
+
+// debug
+/**********************************
+		pool = voronoiShatter.getPool();
+		TetraMapItr itr = pool.begin();
+		tetra = itr->second;
+
+		MObject copyMesh;
+		copyMesh = nodeFn.duplicate();
+		MDagPath newDagPath;
+		newDagPath = MDagPath::getAPathTo(copyMesh);
+		newDagPath.extendToShape();
+		assignShader(copyMesh, meshFn, dagPath);
+		meshFn.setObject(copyMesh);
+		fDGModifier.doIt();
+
+		MPointArray intersectionArr;
+		int orient;
+		Plane plane;
+
+		// plane 4
+		voronoiShatter.vertexToPlane(tetra.v1,tetra.v3,tetra.v4,plane);
+		orient = voronoiShatter.orient(tetra.v1,tetra.v3,tetra.v4,tetra.v2.point);
+		//voronoiShatter.splitMesh(newDagPath,plane,orient);
+
+		//MFnMesh meshFn(newDagPath);
+		MFnMesh meshFn(newDagPath);
+		MItMeshEdge edgeItr(newDagPath);
+		MItMeshEdge edgeItr4Del(newDagPath);
+		MItMeshVertex vertexItr(newDagPath);
+		MItMeshVertex vertexItr4Del(newDagPath);
+
+	Line line;
+		for(;!edgeItr.isDone();edgeItr.next()){
+		
+		edgeItr.updateSurface();
+
+		// set a b
+		//line.la = edgeIt.point(0,MSpace::kWorld);
+		//line.lb = edgeIt.point(1,MSpace::kWorld);
+
+		line.la = edgeItr.point(0);
+		line.lb = edgeItr.point(1);
+
+		int orientA, orientB;
+		Vertex v1,v2,v3;
+		
+		v1.point = plane.pa;
+		v2.point = plane.pb;
+		v3.point = plane.pc;
+
+		orientA = voronoiShatter.orient(v1,v2,v3,line.la);
+		orientB =  voronoiShatter.orient(v1,v2,v3,line.lb);
+
+		// both inside or on
+		if(orientA *orient>=0 && orientB*orient>=0){
+			// a on
+			if(orientA==0){
+			}
+			// b on
+			if(orientB==0){
+			}
+		}
+
+		// both outside
+		else if(orientA*orient<0 && orientB*orient<0){
+			//meshFn.deleteEdge(edgeIt.index());
+		}
+
+		// a inside
+		else if(orientA*orient>=0){ 
+			MPoint intersection = voronoiShatter.getLinePlaneIntersection(line,plane);
+			this->displayLocator(intersection);
+			intersectionArr.append(intersection);
+			//
+			int place[1] = {MFnMesh::kOnEdge};
+			MIntArray placements(place,1);
+
+			int list[5] = {edgeItr.index()};
+			MIntArray edgeList(list,1);
+		
+			float ft = voronoiShatter.getFactor(line.la,line.lb,intersection);
+			float factor[1] = {ft};
+			MFloatArray edgeFactors(factor,1);
+
+			MFloatPointArray internalpoints;
+
+			meshFn.split(placements,edgeList,edgeFactors,internalpoints);
+			output += MString("Split!!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z 
+				+"Insert:" + intersection.x + ","+ intersection.y + ","+intersection.z+ ", factor:" +ft +";\n";
+			//
+			//edgeIt.setPoint(intersection,1,MSpace::kWorld);
+			//edgeItr.setPoint(intersection,1);
+		}
+
+		// b inside
+		else if(orientB*orient>=0){
+			MPoint intersection =  voronoiShatter.getLinePlaneIntersection(line,plane);
+			this->displayLocator(intersection);
+			intersectionArr.append(intersection);
+			//
+			int place[1] = {MFnMesh::kOnEdge};
+			MIntArray placements(place,1);
+
+			int list[5] = {edgeItr.index()};
+			MIntArray edgeList(list,1);
+		
+			float ft = voronoiShatter.getFactor(line.la,line.lb,intersection);
+			float factor[1] = {ft};
+			MFloatArray edgeFactors(factor,1);
+
+			MFloatPointArray internalpoints;
+
+			meshFn.split(placements,edgeList,edgeFactors,internalpoints);
+			output += MString("Split!!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z 
+				+"Insert:" + intersection.x + ","+ intersection.y + ","+intersection.z+ ", factor:" +ft +";\n";
+			//
+			//edgeIt.setPoint(intersection,0,MSpace::kWorld);
+			//edgeItr.setPoint(intersection,0);
+		}
+		}
+		
+		meshFn.updateSurface();
+		edgeItr.reset();
+		vertexItr.reset();
+		double e =0.001;
+		for(;!edgeItr.isDone();edgeItr.next()){
+		line.la = edgeItr.point(0);
+		line.lb = edgeItr.point(1);
+		output += MString("NEW") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z+";\n";
+
+		int orientA, orientB;
+		Vertex v1,v2,v3;
+		
+		v1.point = plane.pa;
+		v2.point = plane.pb;
+		v3.point = plane.pc;
+
+		orientA = voronoiShatter.orient(v1,v2,v3,line.la);
+		orientB = voronoiShatter.orient(v1,v2,v3,line.lb);
+
+		// delete edge if one vertex outside
+		if(abs(orientA)<e)
+			orientA =0;
+		if(abs(orientB)<e)
+			orientB =0;
+
+		// both inside or on
+		if(orientA *orient>=0 && orientB*orient>=0){
+			// a on
+			if(orientA==0){
+			}
+			// b on
+			if(orientB==0){
+			}
+		}
+
+		// both outside
+		else if(orientA*orient<0 && orientB*orient<0){
+			//meshFn.deleteEdge(edgeIt.index());
+		}
+
+		// a inside
+		else if(orientA*orient>=0){ 
+			//edgeIt.setPoint(intersection,1,MSpace::kWorld);
+			edgeItr.setPoint(line.la,1);
+		}
+
+		// b inside
+		else if(orientB*orient>=0){
+			//edgeIt.setPoint(intersection,0,MSpace::kWorld);
+			edgeItr.setPoint(line.lb,0);
+		}
+
+		edgeItr.updateSurface();
+
+	}
+		output += MString("Edge count after split:") + edgeItr.count();
+		
+	/*		meshFn.updateSurface();
+		edgeItr.reset();
+		vertexItr.reset();
+	
+		for(;!edgeItr.isDone();edgeItr.next()){
+		line.la = edgeItr.point(0);
+		line.lb = edgeItr.point(1);
+		output += MString("NEW") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z+";\n";
+		if(abs(line.la.x - line.lb.x)<e
+			&&abs(line.la.y - line.lb.y)<e
+			&&abs(line.la.z - line.lb.z)<e){
+				output += MString("Merage!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z+";\n";
+				MIntArray edgeArr;
+				edgeArr.append(edgeItr.index());
+				meshFn.collapseEdges(edgeArr);
+		}
+		
+
+	}
+	output += MString("Edge count after split:") + edgeItr.count();
+*/
+	/*meshFn.updateSurface();
+	edgeItr.reset();
+	vertexItr.reset();
+		
+	for(;!edgeItr.isDone();edgeItr.next()){
+		line.la = edgeItr.point(0);
+		line.lb = edgeItr.point(1);
+		output += MString("NEW") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z+";\n";
+	}
+	output += MString("Edge count after split:") + edgeItr.count();*/
+		//meshFn.addPolygon(intersectionArr);
+		// clean the vertex which outside the tetra
+/*	output += MString("****************************************************************************");
+	meshFn.updateSurface();
+	edgeItr.reset();
+	vertexItr.reset();
+	// plane 3
+		voronoiShatter.vertexToPlane(tetra.v1,tetra.v2,tetra.v4,plane);
+		orient = voronoiShatter.orient(tetra.v1,tetra.v2,tetra.v4,tetra.v3.point);
+	for(;!edgeItr.isDone();edgeItr.next()){
+		
+		edgeItr.updateSurface();
+
+		// set a b
+		//line.la = edgeIt.point(0,MSpace::kWorld);
+		//line.lb = edgeIt.point(1,MSpace::kWorld);
+
+		line.la = edgeItr.point(0);
+		line.lb = edgeItr.point(1);
+
+		int orientA, orientB;
+		Vertex v1,v2,v3;
+		
+		v1.point = plane.pa;
+		v2.point = plane.pb;
+		v3.point = plane.pc;
+
+		orientA = voronoiShatter.orient(v1,v2,v3,line.la);
+		orientB =  voronoiShatter.orient(v1,v2,v3,line.lb);
+
+		// both inside or on
+		if(orientA *orient>=0 && orientB*orient>=0){
+			// a on
+			if(orientA==0){
+			}
+			// b on
+			if(orientB==0){
+			}
+		}
+
+		// both outside
+		else if(orientA*orient<0 && orientB*orient<0){
+			//meshFn.deleteEdge(edgeIt.index());
+		}
+
+		// a inside
+		else if(orientA*orient>=0){ 
+			MPoint intersection = voronoiShatter.getLinePlaneIntersection(line,plane);
+			this->displayLocator(intersection);
+			intersectionArr.append(intersection);
+			//
+			int place[1] = {MFnMesh::kOnEdge};
+			MIntArray placements(place,1);
+
+			int list[5] = {edgeItr.index()};
+			MIntArray edgeList(list,1);
+		
+			float ft = voronoiShatter.getFactor(line.la,line.lb,intersection);
+			float factor[1] = {ft};
+			MFloatArray edgeFactors(factor,1);
+
+			MFloatPointArray internalpoints;
+
+			meshFn.split(placements,edgeList,edgeFactors,internalpoints);
+			output += MString("Split!!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z 
+				+"Insert:" + intersection.x + ","+ intersection.y + ","+intersection.z+ ", factor:" +ft +";\n";
+			//
+			//edgeIt.setPoint(intersection,1,MSpace::kWorld);
+			//edgeItr.setPoint(intersection,1);
+		}
+
+		// b inside
+		else if(orientB*orient>=0){
+			MPoint intersection =  voronoiShatter.getLinePlaneIntersection(line,plane);
+			this->displayLocator(intersection);
+			intersectionArr.append(intersection);
+			//
+			int place[1] = {MFnMesh::kOnEdge};
+			MIntArray placements(place,1);
+
+			int list[5] = {edgeItr.index()};
+			MIntArray edgeList(list,1);
+		
+			float ft = voronoiShatter.getFactor(line.la,line.lb,intersection);
+			float factor[1] = {ft};
+			MFloatArray edgeFactors(factor,1);
+
+			MFloatPointArray internalpoints;
+
+			meshFn.split(placements,edgeList,edgeFactors,internalpoints);
+			output += MString("Split!!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z 
+				+"Insert:" + intersection.x + ","+ intersection.y + ","+intersection.z+ ", factor:" +ft +";\n";
+			//
+			//edgeIt.setPoint(intersection,0,MSpace::kWorld);
+			//edgeItr.setPoint(intersection,0);
+		}
+		}
+		
+		meshFn.updateSurface();
+		edgeItr.reset();
+		vertexItr.reset();
+		 e = 0.000001;
+		
+		for(;!edgeItr.isDone();edgeItr.next()){
+		line.la = edgeItr.point(0);
+		line.lb = edgeItr.point(1);
+		output += MString("NEW") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z+";\n";
+
+		int orientA, orientB;
+		Vertex v1,v2,v3;
+		
+		v1.point = plane.pa;
+		v2.point = plane.pb;
+		v3.point = plane.pc;
+
+		orientA = voronoiShatter.orient(v1,v2,v3,line.la);
+		orientB = voronoiShatter.orient(v1,v2,v3,line.lb);
+
+		// delete edge if one vertex outside
+		if(abs(orientA)<e)
+			orientA =0;
+		if(abs(orientB)<e)
+			orientB =0;
+
+		// both inside or on
+		if(orientA *orient>=0 && orientB*orient>=0){
+			// a on
+			if(orientA==0){
+			}
+			// b on
+			if(orientB==0){
+			}
+		}
+
+		// both outside
+		else if(orientA*orient<0 && orientB*orient<0){
+			//meshFn.deleteEdge(edgeIt.index());
+		}
+
+		// a inside
+		else if(orientA*orient>=0){ 
+			//edgeIt.setPoint(intersection,1,MSpace::kWorld);
+			edgeItr.setPoint(line.la,1);
+		}
+
+		// b inside
+		else if(orientB*orient>=0){
+			//edgeIt.setPoint(intersection,0,MSpace::kWorld);
+			edgeItr.setPoint(line.lb,0);
+		}
+
+		edgeItr.updateSurface();
+
+	}
+		output += MString("Edge count after split:") + edgeItr.count();
+
+		//meshFn.addPolygon(intersectionArr);
+		// clean the vertex which outside the tetra
+/*		output += MString("****************************************************************************");
+	meshFn.updateSurface();
+	//MFnMesh meshFn(newDagPath);
+	//MItMeshEdge edgeItr(newDagPath);
+	edgeItr.reset();
+	//MItMeshVertex vertexItr(newDagPath);
+	vertexItr.reset();
+
+	for(;!edgeItr.isDone();edgeItr.next()){
+		
+		edgeItr.updateSurface();
+
+		// set a b
+		line.la = edgeItr.point(0,MSpace::kWorld);
+		line.lb = edgeItr.point(1,MSpace::kWorld);
+
+		//line.la = edgeItr.point(0);
+		//line.lb = edgeItr.point(1);
+
+		int orientA, orientB;
+		Vertex v1,v2,v3;
+		
+		v1.point = plane.pa;
+		v2.point = plane.pb;
+		v3.point = plane.pc;
+
+		orientA = voronoiShatter.orient(v1,v2,v3,line.la);
+		orientB = voronoiShatter.orient(v1,v2,v3,line.lb);
+
+		// both inside or on
+		if(orientA *orient>=0 && orientB*orient>=0){
+			// a on
+			if(orientA==0){
+			}
+			// b on
+			if(orientB==0){
+			}
+		}
+
+		// both outside
+		else if(orientA*orient<0 && orientB*orient<0){
+			//meshFn.deleteEdge(edgeItr.index());
+		}
+
+		// a inside
+		else if(orientA*orient>=0){ 
+			MPoint intersection = voronoiShatter.getLinePlaneIntersection(line,plane);
+			output += MString("Split!!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z 
+				+"Insert:" + intersection.x + ","+ intersection.y + ","+intersection.z+ ";\n";
+			edgeItr.setPoint(intersection,1,MSpace::kWorld);
+		}
+
+		// b inside
+		else if(orientB*orient>=0){
+			MPoint intersection = voronoiShatter.getLinePlaneIntersection(line,plane);
+			output += MString("Split!!!") + "A:" + line.la.x + ","+ line.la.y + ","+line.la.z
+				+"B:" + line.lb.x + ","+ line.lb.y + ","+line.lb.z 
+				+"Insert:" + intersection.x + ","+ intersection.y + ","+intersection.z+";\n";
+			edgeItr.setPoint(intersection,0,MSpace::kWorld);
+			
+		}
+
+	}
+	output += MString("Edge count after split:") + edgeItr.count();
+	//voronoiShatter.splitMesh(newDagPath,plane,orient);
+	*/
+//*********************************/
+		meshFn.updateSurface();
+       // MString cmd = MString("source ktRockShatter;");
+		//fDGModifier.commandToExecute(cmd);
 		fDGModifier.doIt();
 		MGlobal::displayInfo(output);
 			//+", Vertex count:"+ meshFn.numVertices() );
@@ -523,7 +1098,7 @@ MObject VoronoiShatterCmd::createTetraMesh(Tetrahedron tetra, MFnMesh &meshFn)
 //		meshFn   -- MFnMesh function set
 //		MDagPath -- MDagPath
 //	Return Value:
-void VoronoiShatterCmd::assignShader(MObject mesh, MFnMesh meshFn, MDagPath dagPath)
+void VoronoiShatterCmd::assignShader(MObject &mesh, MFnMesh &meshFn, MDagPath &dagPath)
 {
 	MObjectArray shaders, comps;
 	MFnSet setFn;
