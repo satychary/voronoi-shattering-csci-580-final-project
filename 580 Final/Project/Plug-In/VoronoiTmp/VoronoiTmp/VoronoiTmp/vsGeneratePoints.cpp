@@ -21,10 +21,21 @@ VertexSet VoronoiShatter::generatePoints(int total, int section){
 	arrayMP =(MPoint*)malloc(sizeof(MPoint)*total); 
 	MPoint min =boundingBox.min();
 	MPoint max =boundingBox.max();
+/*	double rangeX = max.x - min.x; 
+	double rangeY = max.x - min.x; 
+	double rangeZ = max.x - min.x; 
+
+	max.x += rangeX; 
+	max.y += rangeY; 
+	max.z += rangeZ; 
+
+	min.x -= rangeX;
+	min.y -= rangeY;
+	min.z -= rangeZ;
 
 	min *= tMatrix;
 	max *= tMatrix;
-
+	*/
 	MPoint center;
 	center.x=(min.x+max.x)/2;
 	center.y=(min.y+max.y)/2;
