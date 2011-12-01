@@ -132,6 +132,16 @@ bool VoronoiShatter::findPoint(MPoint P, Tetrahedron &tetra){
 				}
 		}
 	}
+	// check if the P is on vertex
+	Vertex v;
+	v.point = P;
+	if(tetra.v1 == v
+		|| tetra.v2 == v
+		|| tetra.v3 == v
+		|| tetra.v4 == v){
+		final_result = false;
+	}
+
 	return final_result;
 }
 bool VoronoiShatter::findNeighbor(Vertex v1, Vertex v2, Vertex v3, Tetrahedron &tetra)
