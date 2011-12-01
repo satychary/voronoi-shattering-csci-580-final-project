@@ -845,7 +845,7 @@ Vertex VoronoiShatter::findSphereCenter( Tetrahedron t )
 	return center;
 }
 
-void VoronoiShatter::getPolyFace(int faceId, MPointArray a)
+void VoronoiShatter::getPolyFace(int faceId, MPointArray &a)
 {/*
 	int startFaceId;
 	int endFaceId;
@@ -868,6 +868,7 @@ void VoronoiShatter::getPolyFace(int faceId, MPointArray a)
 			a.append(VDvertex.at(endVertexId).point);
 		}
 
-	//}
+	//
+		a.remove(a.length()-1);
 	return;
 }
