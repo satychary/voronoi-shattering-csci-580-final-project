@@ -1,0 +1,1 @@
+A maya plug-in for geometry shattering using Voronoi Diagram Alogrithm
